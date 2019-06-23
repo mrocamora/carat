@@ -1,11 +1,9 @@
-carat
-=====
-
-Computer-Aided Rhythm Analysis Toolbox
+carat - Computer-Aided Rhythm Analysis Toolbox
+==============================================
 
 
 [![PyPI](https://img.shields.io/pypi/v/carat.svg)](https://pypi.python.org/pypi/carat)
-[![License](https://img.shields.io/pypi/l/carat.svg)](https://github.com/mrocamora/carat/blob/master/LICENSE.md)
+[![License](https://img.shields.io/github/license/mrocamora/carat.svg)](https://github.com/mrocamora/carat/blob/master/LICENSE.md)
 
 
 Documentation
