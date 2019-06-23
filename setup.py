@@ -1,4 +1,5 @@
 from setuptools import setup, find_packages
+from importlib.machinery import SourceFileLoader
 import sys
 
 
@@ -9,9 +10,9 @@ with open('README.md', 'r') as fdesc:
     long_description = fdesc.read()
 
 setup(
-    name='librosa',
+    name='carat',
     version=version.version,
-    description='Python module for audio and music processing',
+    description='Computer-Aided Rhythm Analysis Toolbox',
     author='Martín Rocamora',
     author_email='rocamora@fing.edu.uy',
     url='http://github.com/mrocamora/carat',
