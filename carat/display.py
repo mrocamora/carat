@@ -1,7 +1,7 @@
 # encoding: utf-8
 # pylint: disable=C0103
 # pylint: disable=too-many-arguments
-"""Utility functions to deal with audio."""
+"""Functions for plots."""
 
 import warnings
 import numpy as np
@@ -11,9 +11,10 @@ from matplotlib.axes import Axes
 from pylab import get_cmap
 from matplotlib import colors
 from matplotlib.ticker import Formatter
+from matplotlib.ticker import NullFormatter
 from . import util
 
-__all__ = ['waveplot', 'specshow', 'mapshow']
+__all__ = ['waveplot', 'specshow', 'mapshow', 'embedding']
 
 # simply use librosa.specshow (this may change in the future)
 specshow = librosa.display.specshow
@@ -282,8 +283,10 @@ def mapshow(data, x_coords=None, y_coords=None, ax=None,
     if clusters is not None:
         # check clusters and return number of clusters
         n_clusters = __check_clusters(clusters, bars)
-        # matrix and other elements needed to plot clusters' map
-        mapc, cmap, norm = __get_cluster_matrix(clusters, n_clusters, y_coords.size)
+        # matrix to plot clusters' map
+        mapc = __get_cluster_matrix(clusters, y_coords.size)
+        # get colormap used to plot clusters
+        cmap, norm = __get_colormap_map(n_clusters)
         # plot clusters in colors
         axes.pcolormesh(x_coords, y_coords, mapc, cmap=cmap, norm=norm, alpha=0.6)
 
@@ -298,6 +301,81 @@ def mapshow(data, x_coords=None, y_coords=None, ax=None,
     return axes
 
 
+def embedding(data, clusters=None, ax=None, **kwargs):
+    '''Display an 2D or 3D embedding of the rhythmic patterns data.
+
+    Parameters
+    ----------
+    data : np.ndarray
+        Low-embedding data points
+
+    ax : matplotlib.axes.Axes or None
+        Axes to plot on instead of the default `plt.gca()`.
+
+    clusters : np.ndarray
+        Array indicating cluster number for each point of the input data.
+        If provided (not None) the clusters area displayed with colors.
+
+    kwargs : additional keyword arguments
+        Arguments passed through to `matplotlib.pyplot.pcolormesh`.
+
+
+    Returns
+    -------
+    axes
+        The axis handle for the figure.
+
+
+    See Also
+    --------
+    matplotlib.pyplot.pcolormesh
+
+
+    Examples
+    --------
+
+    '''
+
+    # number of points
+    points = data.shape[0]
+
+    # check if clusters are provided
+    if clusters is not None:
+        # check clusters and return number of clusters
+        n_clusters = __check_clusters(clusters, points)
+
+        # get colormap used to plot clusters
+        cmap, norm = __get_colormap_map(n_clusters)
+
+    # check axes and create it if needed
+    axes = __check_axes(ax)
+
+    # data dimension to check it is 2D or 3D
+    dim = data.shape[1]
+
+    if dim == 3:
+        if clusters is None:
+            axes.scatter(data[:, 0], data[:, 1], data[:, 2])
+        else:
+            axes.scatter(data[:, 0], data[:, 1], data[:, 2], c=clusters,
+                         cmap=cmap, norm=norm, picker=2, **kwargs)
+        __decorate_axis_embedding(axes, dim)
+
+    elif dim == 2:
+        if clusters is None:
+            axes.scatter(data[:, 0], data[:, 1])
+        else:
+            axes.scatter(data[:, 0], data[:, 1], c=clusters,
+                         cmap=cmap, norm=norm, picker=2, **kwargs)
+        __decorate_axis_embedding(axes, dim)
+
+    else:
+        raise ValueError("`data` points can have two or three dimension to be plotted. "
+                         "Found data.shape[1]={}".format(data.shape[1]))
+
+    return axes
+
+
 def __check_axes(axes):
     '''Check if "axes" is an instance of an axis object.'''
     if axes is None:
@@ -307,6 +385,7 @@ def __check_axes(axes):
         raise ValueError("`axes` must be an instance of matplotlib.axes.Axes. "
                          "Found type(axes)={}".format(type(axes)))
     return axes
+
 
 def __check_clusters(clusters, bars):
     '''Check if "clusters" is an instance of an axis object.
@@ -327,16 +406,25 @@ def __check_clusters(clusters, bars):
     return n_clusters
 
 
-def __get_cluster_matrix(clusters, n_clusters, n_tatums):
+def __get_cluster_matrix(clusters, n_tatums):
+
+    '''Get clusters' matrix to plot clusters in map.'''
+    mapc = np.tile(clusters+0.5, (n_tatums, 1))
+
+    return mapc
+
+
+def __get_colormap_map(n_clusters):
     '''Get clusters' matrix and other elements needed to plot clusters' map.'''
+
     # make a color map of fixed colors for colormesh
     # cmap = get_cmap('RdBu', n_clusters)
     cmap = get_cmap('tab10', n_clusters)
+
     bounds = range(n_clusters+1)
     norm = colors.BoundaryNorm(bounds, cmap.N)
-    mapc = np.tile(clusters+0.5, (n_tatums, 1))
 
-    return mapc, cmap, norm
+    return cmap, norm
 
 
 def __set_current_image(ax, img):
@@ -372,6 +460,15 @@ def __decorate_axis_map(axis, tatums=4):
         line.set_linewidth(2)
         line.set_color('black')
     axis.set_ylabel('beats')
+
+
+def __decorate_axis_embedding(axes, dim):
+    '''Configure axis ticks and labels for embedding plot'''
+
+    if dim == 3:
+        axes.zaxis.set_major_formatter(NullFormatter())
+    axes.xaxis.set_major_formatter(NullFormatter())
+    axes.yaxis.set_major_formatter(NullFormatter())
 
 
 class TimeFormatter(Formatter):

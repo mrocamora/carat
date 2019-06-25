@@ -14,6 +14,7 @@ from __future__ import print_function
 import sys
 import argparse
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 import carat
 
 def compute_feature_map(input_file, annotations_file, delimiter, downbeat_label,
@@ -60,15 +61,27 @@ def compute_feature_map(input_file, annotations_file, delimiter, downbeat_label,
 
     # 5. cluster rhythmic patterns
     print('Clustering rhythmic patterns ...')
-    clusters = carat.clustering.rhythmic_patterns(map_acce, n_clusters=n_clusters)
+    cluster_labs, _ = carat.clustering.rhythmic_patterns(map_acce, n_clusters=n_clusters)
 
-    # 6. plot everything
+    # 6. manifold learning
+    print('Dimensionality reduction ...')
+    map_emb = carat.clustering.manifold_learning(map_acce)
+
+    # 7. plot everything
     plt.figure()
+
     ax1 = plt.subplot(211)
+    # plot feature map
     carat.display.mapshow(map_acce, ax=ax1, n_tatums=n_tatums)
 
     ax2 = plt.subplot(212)
-    carat.display.mapshow(map_acce, ax=ax2, n_tatums=n_tatums, clusters=clusters)
+    # plot feature map with clusters in colors
+    carat.display.mapshow(map_acce, ax=ax2, n_tatums=n_tatums, clusters=cluster_labs)
+
+    fig = plt.figure()
+    ax3 = fig.add_subplot(111, projection='3d')
+    # plot low-dimensional embedding of feature data
+    carat.display.embedding(map_emb, ax=ax3, clusters=cluster_labs)
 
     plt.show()
 

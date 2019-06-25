@@ -1,9 +1,10 @@
 # encoding: utf-8
 # pylint: disable=C0103
 # pylint: disable=too-many-arguments
-"""Utility functions to deal with audio."""
+"""Functions for clustering and manifold learning."""
 
-from sklearn.cluster import KMeans
+from sklearn import cluster
+from sklearn import manifold
 
 __all__ = ['rhythmic_patterns']
 
@@ -21,8 +22,10 @@ def rhythmic_patterns(data, n_clusters=4, method='kmeans'):
         - data (numpy array): feature map
         - n_clusters (int): number of clusters
         - method (str): clustering method
+
     **Returns**:
-        - clusters(numpy array):
+        - c_labs (numpy array): cluster labels for each data point
+        - c_method (): sklearn cluster method object
 
     **Raises**:
         -
@@ -30,15 +33,50 @@ def rhythmic_patterns(data, n_clusters=4, method='kmeans'):
 
     if method == 'kmeans':
         # initialize k-means algorithm
-        kmeans = KMeans(n_clusters=n_clusters, init='k-means++', n_init=10)
+        c_method = cluster.KMeans(n_clusters=n_clusters, init='k-means++', n_init=10)
 
         # cluster data using k-means
-        kmeans.fit(data)
+        c_method.fit(data)
 
         # predict cluster for each data point
-        clusters = kmeans.predict(data)
+        c_labs = c_method.predict(data)
 
     else:
         raise AttributeError("Clustering method not implemented.")
 
-    return clusters
+    return c_labs, c_method
+
+
+def manifold_learning(data, method='isomap', n_neighbors=7, n_components=3):
+    """Manifold learning for dimensionality reduction of rhythmic patterns data.
+
+    Based on the dimensionality reduction for rhythmic patterns introduced in [1].
+
+    [1] Rocamora, Jure, Biscainho
+           "Tools for detection and classification of piano drum patterns from candombe recordings."
+           9th Conference on Interdisciplinary Musicology (CIM),
+           Berlin, Germany. 2014.
+
+    **Args**:
+        - data (numpy array): feature map
+        - n_neighbors (int): number of neighbors for each dat point
+        - n_components (int): number of coordinates for the manifold
+
+    **Returns**:
+        - embedding(numpy array): lower-dimensional embedding of the data
+
+    **Raises**:
+        -
+    """
+
+    if method == 'isomap':
+        # fit manifold from data using isomap algorithm
+        method = manifold.Isomap(n_neighbors, n_components).fit(data)
+
+        # transform data to low-dimension representation
+        embedding = method.transform(data)
+
+    else:
+        raise AttributeError("Manifold learning method not implemented.")
+
+    return embedding
