@@ -72,20 +72,19 @@ def compute_feature_map(input_file, annotations_file, delimiter, downbeat_label,
 
     ax1 = plt.subplot(211)
     # plot feature map
-    carat.display.mapshow(map_acce, ax=ax1, n_tatums=n_tatums)
+    carat.display.map_show(map_acce, ax=ax1, n_tatums=n_tatums)
 
     ax2 = plt.subplot(212)
     # plot feature map with clusters in colors
-    carat.display.mapshow(map_acce, ax=ax2, n_tatums=n_tatums, clusters=cluster_labs)
+    carat.display.map_show(map_acce, ax=ax2, n_tatums=n_tatums, clusters=cluster_labs)
 
     fig = plt.figure()
     ax3 = fig.add_subplot(111, projection='3d')
     # plot low-dimensional embedding of feature data
-    carat.display.embedding(map_emb, ax=ax3, clusters=cluster_labs)
+    carat.display.embedding_plot(map_emb, ax=ax3, clusters=cluster_labs)
 
     fig = plt.figure()
-    ax4 = plt.subplot(411)
-    carat.display.plot_centroid(centroids[0], ax=ax4)
+    carat.display.centroids_plot(centroids, n_tatums=n_tatums)
 
     plt.show()
 

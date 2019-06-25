@@ -43,10 +43,10 @@ def compute_features(input_file, annotations_file, delimiter):
     # 4. plot everything
     # plot waveform
     ax1 = plt.subplot(2, 1, 1)
-    carat.display.waveplot(y, sr, ax=ax1, beats=beats, beat_labs=beat_labs)
+    carat.display.wave_plot(y, sr, ax=ax1, beats=beats, beat_labs=beat_labs)
     # plot accentuation feature
     ax2 = plt.subplot(2, 1, 2, sharex=ax1)
-    carat.display.featureplot(acce, times, ax=ax2, beats=beats, beat_labs=beat_labs)
+    carat.display.feature_plot(acce, times, ax=ax2, beats=beats, beat_labs=beat_labs)
 
     plt.show()
 

@@ -5,22 +5,18 @@
 
 import warnings
 import numpy as np
-import librosa.display
-from matplotlib.cm import gray_r
-from matplotlib.axes import Axes
 from pylab import get_cmap
 from matplotlib import colors
+from matplotlib.cm import gray_r
+from matplotlib.axes import Axes
 from matplotlib.ticker import Formatter
 from matplotlib.ticker import NullFormatter
 from . import util
 
-__all__ = ['waveplot', 'specshow', 'mapshow', 'embedding']
-
-# simply use librosa.specshow (this may change in the future)
-specshow = librosa.display.specshow
+__all__ = ['wave_plot', 'map_show', 'embedding_plot', 'centroids_plot']
 
 
-def waveplot(y, sr=22050, x_axis='time', beats=None, beat_labs=None,
+def wave_plot(y, sr=22050, x_axis='time', beats=None, beat_labs=None,
              ax=None, **kwargs):
     '''Plot an audio waveform and beat labels (optinal).
 
@@ -87,7 +83,7 @@ def waveplot(y, sr=22050, x_axis='time', beats=None, beat_labs=None,
     return out
 
 
-def featureplot(feature, time, x_axis='time', beats=None, beat_labs=None,
+def feature_plot(feature, time, x_axis='time', beats=None, beat_labs=None,
                 ax=None, **kwargs):
     '''Plot an audio waveform and beat labels (optinal).
 
@@ -152,7 +148,53 @@ def featureplot(feature, time, x_axis='time', beats=None, beat_labs=None,
     return out
 
 
-def plot_centroid(centroid, n_tatums=4, ax=None, **kwargs):
+def centroids_plot(centroids, n_tatums=4, ax_list=None, **kwargs):
+    '''Plot centroids of rhythmic patterns clusters.
+
+
+    Parameters
+    ----------
+    centroids: np.ndarray
+        centroids of the rhythmic patterns clusters
+
+    n_tatums : int
+        Number of tatums (subdivisions) per tactus beat
+
+    ax_list : list of matplotlib.axes.Axes or None, one element per centroid
+        Axes to plot on instead of the default `plt.gca()`.
+
+    kwargs
+        Additional keyword arguments to `matplotlib.`
+
+    Returns
+    -------
+    ax : list of matplotlib.axes.Axes
+
+    See also
+    --------
+
+
+    Examples
+    --------
+    '''
+    # number of centroids
+    n_centroids = len(centroids)
+
+    # check list of axes
+    ax = __check_axes_list(n_centroids, ax_list=ax_list)
+
+    # get colormap
+    cmap, _ = __get_colormap_map(n_centroids)
+
+    # plot each cluster
+    for ind, centroid in enumerate(centroids):
+        __plot_centroid(centroid, n_tatums=n_tatums, ax=ax[ind],
+                        color=cmap(ind/n_centroids), **kwargs)
+
+    return ax
+
+
+def __plot_centroid(centroid, n_tatums=4, ax=None, **kwargs):
     '''Plot centroid of a rhythmic patterns cluster.
 
 
@@ -260,7 +302,7 @@ def __plot_beats(beats, max_time, ax, beat_labs=None, **kwargs):
     return ax2
 
 
-def mapshow(data, x_coords=None, y_coords=None, ax=None,
+def map_show(data, x_coords=None, y_coords=None, ax=None,
             n_tatums=4, clusters=None, **kwargs):
     '''Display a feature map.
 
@@ -352,7 +394,7 @@ def mapshow(data, x_coords=None, y_coords=None, ax=None,
     return axes
 
 
-def embedding(data, clusters=None, ax=None, **kwargs):
+def embedding_plot(data, clusters=None, ax=None, **kwargs):
     '''Display an 2D or 3D embedding of the rhythmic patterns data.
 
     Parameters
@@ -438,6 +480,27 @@ def __check_axes(axes):
     return axes
 
 
+def __check_axes_list(n_axes, ax_list=None):
+    '''Check if "ax_list" is a list of length n_axes
+       and each element is an instance of an axis object.
+    '''
+    if ax_list is None:
+        import matplotlib.pyplot as plt
+        fig = plt.gcf()
+        ax_list = []
+        for ind in range(n_axes):
+            ax = fig.add_subplot(n_axes, 1, ind+1)
+            ax_list.append(ax)
+    elif n_axes != len(ax_list):
+        raise ValueError("`ax_list` must be of correct size to match number of axes `n_axes`.")
+    else:
+        for ind in range(n_axes):
+            if not isinstance(ax_list[ind], Axes):
+                raise ValueError("`axes` must be an instance of matplotlib.axes.Axes. "
+                                 "Found type(axes)={}".format(type(ax_list[ind])))
+    return ax_list
+
+
 def __check_clusters(clusters, bars):
     '''Check if "clusters" is an instance of an axis object.
        Check if "clusters" is a one dimensional array of the correct length.
@@ -458,7 +521,6 @@ def __check_clusters(clusters, bars):
 
 
 def __get_cluster_matrix(clusters, n_tatums):
-
     '''Get clusters' matrix to plot clusters in map.'''
     mapc = np.tile(clusters+0.5, (n_tatums, 1))
 
@@ -466,7 +528,7 @@ def __get_cluster_matrix(clusters, n_tatums):
 
 
 def __get_colormap_map(n_clusters):
-    '''Get clusters' matrix and other elements needed to plot clusters' map.'''
+    '''Get colormap for clusters' matrix.'''
 
     # make a color map of fixed colors for colormesh
     # cmap = get_cmap('RdBu', n_clusters)
@@ -513,7 +575,7 @@ def __decorate_axis_map(axis, tatums=4):
     axis.set_ylabel('beats')
 
 
-def __decorate_axis_centroid(axis, c_tatums=16, n_tatums=4, beat_ticks=False):
+def __decorate_axis_centroid(axis, c_tatums=16, n_tatums=4, beat_ticks=True):
     '''Configure axis ticks and labels for centroid plot.
 
     Parameters
@@ -527,18 +589,18 @@ def __decorate_axis_centroid(axis, c_tatums=16, n_tatums=4, beat_ticks=False):
         Number of tatums (subdivisions) per tactus beat
 
     beat_ticks : bool
-        If `True`, then beat ticks are added to the time axis
+        If `True`, then labels are shown only at ticks corresponding to beats
 
     '''
     tatums = np.arange(c_tatums)
     axis.xaxis.set_ticks(tatums + 1)
     axis.xaxis.set_ticks_position('top')
     axis.yaxis.set_major_formatter(NullFormatter())
+    axis.set_ylim(0, 1)
 
     if beat_ticks:
-        beat_labs = [(x % n_tatums) + 1 if (x % n_tatums) == 0 else ' ' for x in tatums]
+        beat_labs = [int(x / n_tatums) + 1 if (x % n_tatums) == 0 else ' ' for x in tatums]
         axis.set_xticklabels(beat_labs)
-
 
 
 def __decorate_axis_embedding(axes, dim):
