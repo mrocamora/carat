@@ -61,7 +61,7 @@ def compute_feature_map(input_file, annotations_file, delimiter, downbeat_label,
 
     # 5. cluster rhythmic patterns
     print('Clustering rhythmic patterns ...')
-    cluster_labs, _ = carat.clustering.rhythmic_patterns(map_acce, n_clusters=n_clusters)
+    cluster_labs, centroids, _ = carat.clustering.rhythmic_patterns(map_acce, n_clusters=n_clusters)
 
     # 6. manifold learning
     print('Dimensionality reduction ...')
@@ -82,6 +82,10 @@ def compute_feature_map(input_file, annotations_file, delimiter, downbeat_label,
     ax3 = fig.add_subplot(111, projection='3d')
     # plot low-dimensional embedding of feature data
     carat.display.embedding(map_emb, ax=ax3, clusters=cluster_labs)
+
+    fig = plt.figure()
+    ax4 = plt.subplot(411)
+    carat.display.plot_centroid(centroids[0], ax=ax4)
 
     plt.show()
 

@@ -1,5 +1,9 @@
-carat - Computer-Aided Rhythm Analysis Toolbox
-==============================================
+carat
+=====
+<pre>
+ _  _  __ _ _|_
+(_ (_| | (_| |_   computer-aided rhythm analysis toolbox
+</pre>
 
 
 [![PyPI](https://img.shields.io/pypi/v/carat.svg)](https://pypi.python.org/pypi/carat)

@@ -152,6 +152,57 @@ def featureplot(feature, time, x_axis='time', beats=None, beat_labs=None,
     return out
 
 
+def plot_centroid(centroid, n_tatums=4, ax=None, **kwargs):
+    '''Plot centroid of a rhythmic patterns cluster.
+
+
+    Parameters
+    ----------
+    centroid : np.ndarray
+        centroid feature values
+
+    n_tatums : int
+        Number of tatums (subdivisions) per tactus beat
+
+    ax : matplotlib.axes.Axes or None
+        Axes to plot on instead of the default `plt.gca()`.
+
+    kwargs
+        Additional keyword arguments to `matplotlib.`
+
+    Returns
+    -------
+
+    See also
+    --------
+
+
+    Examples
+    --------
+    '''
+
+    kwargs.setdefault('color', 'seagreen')
+    kwargs.setdefault('alpha', 0.8)
+
+    if centroid.ndim > 1:
+        raise ValueError("`centroid` must be a one dimensional array. "
+                         "Found centroid.ndim={}".format(centroid.ndim))
+
+    # number of tatums in centroid
+    c_tatums = centroid.size
+
+    # check axes and create it if needed
+    axes = __check_axes(ax)
+
+    # plot centroid
+    out = axes.bar(np.arange(c_tatums)+1, centroid, **kwargs)
+
+    # configure tickers and labels
+    __decorate_axis_centroid(axes, c_tatums, n_tatums)
+
+    return out
+
+
 def __plot_beats(beats, max_time, ax, beat_labs=None, **kwargs):
     '''Plot beat labels.
 
@@ -460,6 +511,34 @@ def __decorate_axis_map(axis, tatums=4):
         line.set_linewidth(2)
         line.set_color('black')
     axis.set_ylabel('beats')
+
+
+def __decorate_axis_centroid(axis, c_tatums=16, n_tatums=4, beat_ticks=False):
+    '''Configure axis ticks and labels for centroid plot.
+
+    Parameters
+    ----------
+    axis : matplotlib.axes.Axes or None
+
+    c_tatums : int
+        Number of tatums (subdivisions) in centroid
+
+    n_tatums : int
+        Number of tatums (subdivisions) per tactus beat
+
+    beat_ticks : bool
+        If `True`, then beat ticks are added to the time axis
+
+    '''
+    tatums = np.arange(c_tatums)
+    axis.xaxis.set_ticks(tatums + 1)
+    axis.xaxis.set_ticks_position('top')
+    axis.yaxis.set_major_formatter(NullFormatter())
+
+    if beat_ticks:
+        beat_labs = [(x % n_tatums) + 1 if (x % n_tatums) == 0 else ' ' for x in tatums]
+        axis.set_xticklabels(beat_labs)
+
 
 
 def __decorate_axis_embedding(axes, dim):

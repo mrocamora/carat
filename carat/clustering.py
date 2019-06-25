@@ -25,6 +25,7 @@ def rhythmic_patterns(data, n_clusters=4, method='kmeans'):
 
     **Returns**:
         - c_labs (numpy array): cluster labels for each data point
+        - c_centroids ():  cluster centroids
         - c_method (): sklearn cluster method object
 
     **Raises**:
@@ -38,13 +39,16 @@ def rhythmic_patterns(data, n_clusters=4, method='kmeans'):
         # cluster data using k-means
         c_method.fit(data)
 
+        # cluster centroids
+        c_centroids = c_method.cluster_centers_
+
         # predict cluster for each data point
         c_labs = c_method.predict(data)
 
     else:
         raise AttributeError("Clustering method not implemented.")
 
-    return c_labs, c_method
+    return c_labs, c_centroids, c_method
 
 
 def manifold_learning(data, method='isomap', n_neighbors=7, n_components=3):
