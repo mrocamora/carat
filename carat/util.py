@@ -7,9 +7,16 @@ import warnings
 import numpy as np
 import scipy as sp
 import scipy.signal
+import pkg_resources
 import scipy.fftpack as fft
 #import scipy.signal
 #import exceptions
+
+
+EXAMPLE_AUDIO1 = 'example_data/candombe/csic.1995_ansina1_01.wav'
+EXAMPLE_AUDIO2 = 'example_data/samba/[0216] S2-TB2-03-SE.wav'
+EXAMPLE_BEATS1 = 'example_data/candombe/csic.1995_ansina1_01.csv'
+EXAMPLE_BEATS2 = 'example_data/samba/[0216] S2-TB2-03-SE.beats.txt'
 
 
 __all__ = ['find_nearest', 'STFT', 'hz2mel', 'mel2hz', 'deltas']
@@ -239,3 +246,69 @@ def getValidKeywords(kw, func):
             valid_kw[k] = v
             del invalid_kw[k]
     return valid_kw, invalid_kw
+
+
+def example_audio_file(num_file=None):
+    '''Get the path to an included audio example file.
+
+    Examples
+    --------
+    >>> # Load the waveform from the default example track
+    >>> y, sr = carat.audio.load(carat.util.example_audio_file())
+
+    >>> # Load 10 seconds of the waveform from the example track number 1
+    >>> y, sr = carat.audio.load(carat.util.example_audio_file(num_file=1), duration=10.0))
+
+    >>> # Load the waveform from the example track number 2
+    >>> y, sr = carat.audio.load(carat.util.example_audio_file(num_file=2))
+
+    Parameters
+    ----------
+    num_file : int
+        Number to select among the example files available. 
+
+    Returns
+    -------
+    filename : str
+        Path to the audio example file included with carat.
+    '''
+
+    if num_file == 1:
+        EXAMPLE_AUDIO = EXAMPLE_AUDIO1
+    elif num_file == 2:
+        EXAMPLE_AUDIO = EXAMPLE_AUDIO2
+    else:
+        EXAMPLE_AUDIO = EXAMPLE_AUDIO2
+     
+    return pkg_resources.resource_filename(__name__, EXAMPLE_AUDIO)
+
+
+def example_beats_file(num_file=None):
+    '''Get the path to an included example file of beats annotations.
+
+    Examples
+    --------
+    >>> # Load beats and downbeats from the example audio file number 1
+    >>> beats, b_labs = carat.load_beats(carat.util.example_beats_file(num_file=1)) 
+    >>> downbeats, d_labs = carat.load_downbeats(carat.util.example_beats_file(num_file=1))
+
+    Parameters
+    ----------
+    num_file : int
+        Number to select among the example files available. 
+
+    Returns
+    -------
+    filename : str
+        Path to the beats annotations example file included with carat.
+    '''
+
+    if num_file == 1:
+        EXAMPLE_BEATS = EXAMPLE_BEATS1
+    elif num_file == 2:
+        EXAMPLE_BEATS = EXAMPLE_BEATS2
+    else:
+        EXAMPLE_BEATS = EXAMPLE_BEATS2
+     
+    return pkg_resources.resource_filename(__name__, EXAMPLE_BEATS)
+

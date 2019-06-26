@@ -78,7 +78,6 @@ def load_beats(labels_file, delimiter=',', times_col=0, labels_col=1):
 def load_downbeats(labels_file, delimiter=',', times_col=0, labels_col=1, downbeat_label='.1'):
     """Load annotated downbeats from text (csv) file.
 
-
     Parameters
     ----------
     labels_file (str) : name (including path) of the input file
