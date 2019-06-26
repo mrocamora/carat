@@ -7,11 +7,11 @@ import warnings
 import numpy as np
 import scipy as sp
 import scipy.signal
-import pkg_resources
 import scipy.fftpack as fft
+import pkg_resources
 #import scipy.signal
 #import exceptions
-
+from .exceptions import ParameterError
 
 EXAMPLE_AUDIO1 = 'example_data/candombe/csic.1995_ansina1_01.wav'
 EXAMPLE_AUDIO2 = 'example_data/samba/[0216] S2-TB2-03-SE.wav'
@@ -138,6 +138,143 @@ def segmentSignal(signal, window_len, hop):
     return part_sig
 
 
+def __get_segment(y, idx_ini, idx_end):
+    """ Get a segment of an array, given by initial and ending indexes.
+
+    **Args**:
+        y (numpy array): Must be a one-dimensional array.
+        idx_ini (int): initial index.
+        idx_end (int): ending index.
+
+    **Returns**:
+        segment (numpy array): segment of the signal.
+
+    **Raises**:
+        AttributeError if y is not a one-dimensional numpy array.
+        ValueError if idx_ini or idx_end fall outside the signal bounds.
+        ValueError if idx_ini >= idx_end.
+    """
+
+    if not isinstance(y, np.ndarray):
+        raise ParameterError('Input must be of type numpy.ndarray, '
+                             'given type(y)={}'.format(type(y)))
+    if y.ndim != 1:
+        raise ParameterError('Input must be one-dimensional, '
+                             'given y.ndim={}'.format(y.ndim))
+    if idx_ini >= idx_end:
+        raise ValueError('Ending index is smaller than initial index.'
+                         ' idx_ini={:d}, idx_end={:d}'.format(idx_ini, idx_end))
+    if idx_ini < 0 or idx_end >= y.size:
+        raise ValueError('Index out of signal bounds.'
+                         ' y.size={:d}, idx_ini={:d},'
+                         ' idx_end={:d}'.format(y.size, idx_ini, idx_end))
+
+    y_segment = y[idx_ini:idx_end]
+
+    return y_segment
+
+
+def get_time_segment(y, time, time_ini, time_end):
+    """ Get a segment of an array, given by initial and ending indexes.
+
+    **Args**:
+        y (numpy array): signal array. Must be a one-dimensional array.
+        time (numpy array): corresponding time. Must be a one-dimensional array.
+        time_ini (int): initial time value.
+        time_end (int): ending time value.
+
+    **Returns**:
+        segment (numpy array): segment of the signal.
+
+    **Raises**:
+        AttributeError if y or time is not a one-dimensional numpy array.
+        ValueError if idx_ini or idx_end fall outside the signal bounds.
+        ValueError if idx_ini >= idx_end.
+    """
+
+    if not isinstance(y, np.ndarray):
+        raise ParameterError('Input must be of type numpy.ndarray, '
+                             'given type(y)={}'.format(type(y)))
+    if not isinstance(time, np.ndarray):
+        raise ParameterError('Input must be of type numpy.ndarray, '
+                             'given type(time)={}'.format(type(time)))
+    if y.ndim != 1:
+        raise ParameterError('Input must be one-dimensional, '
+                             'given y.ndim={}'.format(y.ndim))
+    if time.ndim != 1:
+        raise ParameterError('Input must be one-dimensional, '
+                             'given time.ndim={}'.format(time.ndim))
+    if time.size != y.size:
+        raise ParameterError('Input y and time must be of the same size, '
+                             'time.size={:d}, y.size={:d}'.format(time.size, y.size))
+    if time_ini >= time_end:
+        raise ValueError('Ending time is smaller than initial time.'
+                         ' idx_ini={:.3f}, idx_end={:.3f}'.format(time_ini, time_end))
+
+    if time_ini < time[0] or time_end > time[-1]:
+        raise ValueError('Time valures are out of signal bounds.'
+                         ' time[0]={:.3f}, time[-1]={:.3f}, time_ini={:.3f},\
+                         time_end={:.3f},'.format(time[0], time[-1], time_ini, time_end))
+
+    # get index of samples within these positions
+    inds = np.where(np.logical_and(time >= time_ini, time <= time_end))
+    # get time segment
+    y_segment = __get_segment(y, inds[0], inds[1])
+
+    return y_segment
+
+
+def beat2signal(y, time, beats, ind_beat):
+    """ Get the signal fragment corresponding to a beat given by index ind_beat.
+        If instead of beats, downbeats are used, then a bar is returned.
+
+    **Args**:
+        y (numpy array): signal array. Must be a one-dimensional array.
+        time (numpy array): corresponding time. Must be a one-dimensional array.
+        beats (numpy array): time instants of the beats.
+        ind_beat (int): index of the desired beat.
+
+    **Returns**:
+        beat_segment (numpy array): segment of the signal corresponding to the beat.
+
+    **Raises**:
+        AttributeError if y or time is not a one-dimensional numpy array.
+        ValueError if ind_beat fall outside the beats bounds.
+    """
+
+    if not isinstance(y, np.ndarray):
+        raise ParameterError('Input must be of type numpy.ndarray, '
+                             'given type(y)={}'.format(type(y)))
+    if not isinstance(time, np.ndarray):
+        raise ParameterError('Input must be of type numpy.ndarray, '
+                             'given type(time)={}'.format(type(time)))
+    if not isinstance(beats, np.ndarray):
+        raise ParameterError('Input must be of type numpy.ndarray, '
+                             'given type(beats)={}'.format(type(beats)))
+    if y.ndim != 1:
+        raise ParameterError('Input must be one-dimensional, '
+                             'given y.ndim={}'.format(y.ndim))
+    if time.ndim != 1:
+        raise ParameterError('Input must be one-dimensional, '
+                             'given time.ndim={}'.format(time.ndim))
+    if beats.ndim != 1:
+        raise ParameterError('Input must be one-dimensional, '
+                             'given beats.ndim={}'.format(beats.ndim))
+    if time.size != y.size:
+        raise ParameterError('Input y and time must be of the same size, '
+                             'time.size={:d}, y.size={:d}'.format(time.size, y.size))
+    if ind_beat >= beats.size or ind_beat < 0:
+        raise ValueError('Index out of bounds.'
+                         ' ind_beat={:d}, beats.size={:d}'.format(ind_beat, beats.size))
+
+    time_ini = beats[ind_beat]
+    time_end = beats[ind_beat+1]
+
+    beat_segment = get_time_segment(y, time, time_ini, time_end)
+
+    return beat_segment
+
+
 def fft2mel(freq, nfilts, minfreq, maxfreq):
     """ This method returns a 2-D Numpy array of weights that map a linearly spaced spectrogram
     to the Mel scale.
@@ -204,6 +341,7 @@ def mel2hz(z_mel):
     logstep = sp.exp(sp.log(6.4)/27)
     f_hz = sp.where(z_mel < brkpt, f_0 + f_sp*z_mel, brkfrq*sp.exp(sp.log(logstep)*(z_mel-brkpt)))
     return f_hz
+
 
 def deltas(x, w=3):
     """ this function estimates the derivative of x
@@ -311,4 +449,3 @@ def example_beats_file(num_file=None):
         EXAMPLE_BEATS = EXAMPLE_BEATS2
      
     return pkg_resources.resource_filename(__name__, EXAMPLE_BEATS)
-
