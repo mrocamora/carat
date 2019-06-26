@@ -17,9 +17,9 @@ See http://carat.github.io/carat/ for a complete reference manual and introducto
 
 Demonstration notebooks
 -----------------------
-What does carat do?  Here are some quick demonstrations:
+Some demonstrations of what you can do with carat:
 
-* [Introduction notebook](http://nbviewer.ipython.org/github/librosa/librosa/blob/master/examples/carat%20demo.ipynb): a brief introduction to some commonly used features.
+* [Rhythmic patterns demo notebook](http://nbviewer.ipython.org/github/mrocamora/carat/blob/master/examples/carat_rhythmic_patterns_demo.ipynb): how to extract rhythmic patterns from an audio recording.
 
 
 Installation
