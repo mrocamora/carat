@@ -25,14 +25,13 @@ Some demonstrations of what you can do with carat:
 Installation
 ------------
 
-The latest stable release is available on PyPI, and you can install it by saying
+The latest stable release is available on PyPI, and you can install it by
 ```
 pip install carat
 ```
 
-
-To build librosa from source, say `python setup.py build`.
-Then, to install librosa, say `python setup.py install`.
+To build carat from source, use `python setup.py build`.
+Then, to install carat, say `python setup.py install`.
 If all went well, you should be able to execute the demo scripts under `examples/`
 (OS X users should follow the installation guide given below).
 
@@ -55,7 +54,7 @@ carat (0.x.x, /path/to/carat)
 
 ### Hints for the Installation
 
-`carat` uses `librosa` to load audio files.
+`carat` uses `librosa` to load audio files. The following are the installation hints provided by librosa in order to install the needed dependencies to load audio files. 
 
 `librosa` uses `soundfile` and `audioread` to load audio files.
 Note that `soundfile` does not currently support MP3, which will cause librosa to
