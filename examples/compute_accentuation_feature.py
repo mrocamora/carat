@@ -28,7 +28,7 @@ def compute_features(input_file, annotations_file, delimiter):
           delimiter string to process the annotations file
     '''
 
-    # 1. load the wav file and resample to 22.050 KHz
+    # 1. load the wav file
     print('Loading audio file ...', input_file)
     y, sr = carat.audio.load(input_file, duration=10.0)
 
