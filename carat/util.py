@@ -216,10 +216,7 @@ def get_time_segment(y, time, time_ini, time_end):
                          ' time[0]={:.3f}, time[-1]={:.3f}, time_ini={:.3f},\
                          time_end={:.3f},'.format(time[0], time[-1], time_ini, time_end))
 
-    # get index of samples within these positions
-    inds = np.where(np.logical_and(time >= time_ini, time <= time_end))
-    # get time segment
-    y_segment = __get_segment(y, inds[0], inds[1])
+    y_segment = y[(time >= time_ini) & (time <= time_end)]
 
     return y_segment
 
