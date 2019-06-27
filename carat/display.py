@@ -188,13 +188,13 @@ def centroids_plot(centroids, n_tatums=4, ax_list=None, **kwargs):
 
     # plot each cluster
     for ind, centroid in enumerate(centroids):
-        __plot_centroid(centroid, n_tatums=n_tatums, ax=ax[ind],
-                        color=cmap(ind/n_centroids), **kwargs)
+        plot_centroid(centroid, n_tatums=n_tatums, ax=ax[ind],
+                      color=cmap(ind/n_centroids), **kwargs)
 
     return ax
 
 
-def __plot_centroid(centroid, n_tatums=4, ax=None, **kwargs):
+def plot_centroid(centroid, n_tatums=4, ax=None, **kwargs):
     '''Plot centroid of a rhythmic patterns cluster.
 
 
@@ -448,7 +448,7 @@ def embedding_plot(data, clusters=None, ax=None, **kwargs):
 
     if dim == 3:
         if clusters is None:
-            axes.scatter(data[:, 0], data[:, 1], data[:, 2])
+            axes.scatter(data[:, 0], data[:, 1], data[:, 2], **kwargs)
         else:
             axes.scatter(data[:, 0], data[:, 1], data[:, 2], c=clusters,
                          cmap=cmap, norm=norm, picker=2, **kwargs)
@@ -456,7 +456,7 @@ def embedding_plot(data, clusters=None, ax=None, **kwargs):
 
     elif dim == 2:
         if clusters is None:
-            axes.scatter(data[:, 0], data[:, 1])
+            axes.scatter(data[:, 0], data[:, 1], **kwargs)
         else:
             axes.scatter(data[:, 0], data[:, 1], c=clusters,
                          cmap=cmap, norm=norm, picker=2, **kwargs)
