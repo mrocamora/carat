@@ -30,11 +30,11 @@ def compute_features(input_file, annotations_file, delimiter):
 
     # 1. load the wav file
     print('Loading audio file ...', input_file)
-    y, sr = carat.audio.load(input_file, duration=10.0)
+    y, sr = carat.audio.load(input_file, sr=None, duration=10.0)
 
     # 2. compute accentuation feature
     print('Computing accentuation feature ...')
-    acce, times, _ = carat.features.accentuation_feature(y, sr, minfreq=20, maxfreq=250)
+    acce, times, _ = carat.features.accentuation_feature(y, sr, minfreq=20, maxfreq=200)
 
     # 3. load beat annotations
     print('Loading beat annotations ...', annotations_file)

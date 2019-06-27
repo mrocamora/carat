@@ -37,7 +37,7 @@ def compute_feature_map(input_file, annotations_file, delimiter, downbeat_label,
 
     # 1. load the wav file
     print('Loading audio file ...', input_file)
-    y, sr = carat.audio.load(input_file)
+    y, sr = carat.audio.load(input_file, sr=None)
 
     # 2. load beat and downbeat annotations
     print('Loading beat and downbeat annotations ...', annotations_file)

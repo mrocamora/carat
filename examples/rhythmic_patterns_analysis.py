@@ -36,9 +36,9 @@ def rhythmic_patterns_analysis(input_file, annotations_file, delimiter,
           number of clusters for rhythmic patterns clustering
     '''
 
-    # 1. load the wav file and resample to 22.050 KHz
+    # 1. load the wav file
     print('Loading audio file ...', input_file)
-    y, sr = carat.audio.load(input_file)
+    y, sr = carat.audio.load(input_file, sr=None)
 
     # 2. load beat and downbeat annotations
     print('Loading beat and downbeat annotations ...', annotations_file)
