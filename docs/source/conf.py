@@ -12,6 +12,7 @@
 #
 import os
 import sys
+import sphinx
 sys.path.insert(0, os.path.abspath('../../'))
 
 
@@ -36,6 +37,16 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary']
 
 autosummary_generate = True 
+
+#--------
+# Doctest
+#--------
+
+doctest_global_setup = """
+import numpy as np
+import scipy
+import carat
+"""
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
