@@ -36,8 +36,10 @@ setup(
         'soundfile >= 0.9.0',
     ],
     extras_require={
-        'docs': ['numpydoc',
-                 'matplotlib >= 2.0.0'],
+        'docs': ['numpydoc', 'sphinx!=1.3.1', 'sphinx_rtd_theme',
+                 'matplotlib >= 2.0.0',
+                 'sphinxcontrib-versioning >= 2.2.1',
+                 'sphinx-gallery'],
         'tests': ['matplotlib >= 2.1'],
         'display': ['matplotlib >= 1.5'],
     }
