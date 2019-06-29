@@ -1,7 +1,40 @@
 # encoding: utf-8
 # pylint: disable=C0103
 # pylint: disable=too-many-arguments
-"""Utility functions."""
+"""
+Util
+====
+
+Signal segmentation
+-------------------
+.. autosummary::
+    :toctree: generated/
+
+    segmentSignal
+    beat2signal
+    get_time_segment
+
+Time-frequency
+------------------
+.. autosummary::
+    :toctree: generated/
+
+    STFT
+    fft2mel
+    hz2mel
+    mel2hz
+
+Miscellaneous
+-------------
+.. autosummary::
+    :toctree: generated/
+
+    example_audio_file
+    example_beats_file
+    find_nearest
+    deltas
+"""
+
 
 import warnings
 import numpy as np
@@ -49,14 +82,10 @@ def STFT(x, window_length, hop, windowing_function=sp.hanning, dft_length=None,
 
     **Args**:
         window_len (float): length of the window in seconds (must be positive).
-        window (callable): a callable object that receives the window length in samples
-                           and returns a numpy array containing the windowing function
-                           samples.
+        window (callable): a callable object that receives the window length in samples and returns a numpy array containing the windowing function samples.
         hop (float): frame hop between adjacent frames in seconds.
-        final_time (positive integer): time (in seconds) up to which the spectrogram is
-                                       calculated.
-        zp_flag (bool): a flag indicating if the *Zero-Phase Windowing* should be
-                        performed.
+        final_time (positive integer): time (in seconds) up to which the spectrogram is calculated.
+        zp_flag (bool): a flag indicating if the *Zero-Phase Windowing* should be performed.
 
     **Returns**:
 	spec: numpy array

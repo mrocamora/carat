@@ -1,7 +1,44 @@
 # encoding: utf-8
 # pylint: disable=C0103
 # pylint: disable=too-many-arguments
-"""Functions to compute accentuation features and feature maps."""
+"""
+Features
+========
+
+Accentuation features
+---------------------
+.. autosummary::
+    :toctree: generated/
+
+    accentuation_feature
+    feature_normalization
+    feature_time_quantize
+
+Feature maps
+------------
+.. autosummary::
+    :toctree: generated/
+
+    feature_map
+
+Time-frequency
+--------------
+.. autosummary::
+    :toctree: generated/
+
+    spectrogram
+    melSpectrogram
+
+Miscellaneous
+-------------
+.. autosummary::
+    :toctree: generated/
+
+    generate_tatum_grid
+    halfWaveRectification
+    calculateDelta
+    sumFeatures
+"""
 
 import numpy as np
 import scipy as sp
@@ -36,13 +73,10 @@ def accentuation_feature(signal, fs, sum_flag=True, log_flag=False, mel_flag=Tru
         - alpha (int): compression parameter for dB conversion - log10(alpha*abs(S)+1).
         - maxfilt_flag (bool): true if a maximum filtering is applied to the feature.
         - maxbins (int): number of frequency bins for maximum filter size
-        - **kw: these keyword arguments are passed down to each of the functions used
+        - ``**kw`` : these keyword arguments are passed down to each of the functions used
     **Returns**:
         - feature (numpy array): feature values
         - time (numpy array): time values
-
-    **Raises**:
-        -
     """
 
     # STFT
@@ -104,7 +138,7 @@ def feature_map(feature, time, beats, downbeats, n_beats=4, n_tatums=4,
 
     **Args**:
         - feature (numpy array): feature signal
-        - **kw: these keyword arguments are passed down to each of the functions used
+        - ``**kw``: these keyword arguments are passed down to each of the functions used
     **Returns**:
         - :
 
@@ -337,9 +371,9 @@ def halfWaveRectification(in_signal):
         - input: feature object
         - delta_filter_length (int): length of the filter used to calculate the Delta
           coefficients. Must be an odd number.
+
     **Returns**:
         - output: numpy array
-        A :class:`Feature` object containing the result of the calculation.
 
     **Raises**:
         - ValueError when the input features are complex.

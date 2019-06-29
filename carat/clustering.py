@@ -1,12 +1,24 @@
 # encoding: utf-8
 # pylint: disable=C0103
 # pylint: disable=too-many-arguments
-"""Functions for clustering and manifold learning."""
+"""
+Clustering
+==========
+
+Clustering and manifold learning
+--------------------------------
+.. autosummary::
+    :toctree: generated/
+
+    rhythmic_patterns
+    manifold_learning
+"""
+
 
 from sklearn import cluster
 from sklearn import manifold
 
-__all__ = ['rhythmic_patterns']
+__all__ = ['rhythmic_patterns', 'manifold_learning']
 
 def rhythmic_patterns(data, n_clusters=4, method='kmeans'):
     """Clustering of rhythmic patterns from feature map.
@@ -18,18 +30,27 @@ def rhythmic_patterns(data, n_clusters=4, method='kmeans'):
            9th Conference on Interdisciplinary Musicology (CIM),
            Berlin, Germany. 2014.
 
-    **Args**:
-        - data (numpy array): feature map
-        - n_clusters (int): number of clusters
-        - method (str): clustering method
+    Parameters
+    ----------
+    data  :  np.ndarray
+        feature map
+    n_clusters : int
+        number of clusters
+    method : str
+        clustering method
 
-    **Returns**:
-        - c_labs (numpy array): cluster labels for each data point
-        - c_centroids ():  cluster centroids
-        - c_method (): sklearn cluster method object
+    Returns
+    -------
+    c_labs : np.ndarray
+        cluster labels for each data point
+    c_centroids : np.ndarray 
+        cluster centroids
+    c_method : sklearn.cluster
+        sklearn cluster method object
 
-    **Raises**:
-        -
+    See Also
+    --------
+    sklearn.cluster.KMeans        
     """
 
     if method == 'kmeans':

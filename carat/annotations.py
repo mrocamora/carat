@@ -1,6 +1,17 @@
 # encoding: utf-8
 # pylint: disable=C0103
-"""Utility functions to deal with annotations."""
+"""
+Annotations
+===========
+
+Reading and writing annotations
+-------------------------------
+.. autosummary::
+    :toctree: generated/
+
+    load_beats
+    load_downbeats
+"""
 
 import csv
 import numpy as np
