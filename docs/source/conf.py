@@ -38,6 +38,10 @@ extensions = ['sphinx.ext.autodoc',
 
 autosummary_generate = True 
 
+
+# The master toctree document.
+master_doc = 'index'
+
 #--------
 # Doctest
 #--------
