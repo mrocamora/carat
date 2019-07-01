@@ -23,28 +23,35 @@ def load_beats(labels_file, delimiter=',', times_col=0, labels_col=1):
 
     Parameters
     ----------
-    labels_file (str) : name (including path) of the input file
-    times_col (int) : column index of the time data
-    labels_col (int) : column index of the label data
+    labels_file : str
+        name (including path) of the input file
+    times_col : int
+        column index of the time data
+    labels_col : int
+        column index of the label data
 
     Returns
     -------
-    beat_times  (np.ndarray) : time instants of the beats
-    beat_labels (list)       : labels at the beats (e.g. 1.1, 1.2, etc)
+    beat_times : np.ndarray
+        time instants of the beats
+    beat_labels : list
+        labels at the beats (e.g. 1.1, 1.2, etc)
 
     Examples
     --------
-    >>> # load an example file from the candombe dataset
-    >>> # (http://www.eumus.edu.uy/candombe/datasets/ISMIR2015/)
-    >>> beats, beat_labs = annotations.load_beats('candombe_beats.csv')
+    >>> # load an included example file from the candombe dataset:
+    >>> # http://www.eumus.edu.uy/candombe/datasets/ISMIR2015/
+    >>> annotations_file = carat.util.example_beats_file(num_file=1)
+    >>> beats, beat_labs = annotations.load_beats(annotations_file)
     >>> beats[0]
     0.548571428
     >>> beat_labs[0]
     '1.1'
 
-    >>> # load an example file from the samba dataset
-    >>> beats, beat_labs = annotations.load_beats('./material/data/samba/[0216]
-                                                  S2-TB2-03-SE.beats.txt', delimiter=' ')
+    >>> # load an included example file from the samba dataset:
+    >>> # http://www.smt.ufrj.br/~starel/datasets/brid.html
+    >>> annotations_file = carat.util.example_beats_file(num_file=2)
+    >>> beats, beat_labs = annotations.load_beats(annotations_file, delimiter=' ')
     >>> beats
     array([ 2.088,  2.559,  3.012,  3.48 ,  3.933,  4.41 ,  4.867,  5.32 ,
             5.771,  6.229,  6.69 ,  7.167,  7.633,  8.092,  8.545,  9.01 ,
@@ -91,45 +98,38 @@ def load_downbeats(labels_file, delimiter=',', times_col=0, labels_col=1, downbe
 
     Parameters
     ----------
-    labels_file (str) : name (including path) of the input file
-    times_col (int) : column index of the time data
-    labels_col (int) : column index of the label data
-    downbeat_label (str) : string to look for in the label data to select downbeats
+    labels_file : str
+        name (including path) of the input file
+    times_col : int
+        column index of the time data
+    labels_col : int
+        column index of the label data
+    downbeat_label : str
+        string to look for in the label data to select downbeats
 
     Returns
     -------
-    downbeat_times  (np.ndarray) : time instants of the downbeats
-    downbeat_labels (list)       : labels at the downbeats
+    downbeat_times : np.ndarray
+        time instants of the downbeats
+    downbeat_labels : list
+        abels at the downbeats
 
     Examples
     --------
-    >>> # Load an example labels file
-    >>> y, sr = librosa.load(librosa.util.example_audio_file())
-    >>> beats, beat_labs = annotations.load_beats('candombe_beats.csv')
-    >>> librosa.get_duration(y=y, sr=sr)
-    61.45886621315193
+    >>> # load an included example file from the candombe dataset:
+    >>> # http://www.eumus.edu.uy/candombe/datasets/ISMIR2015/
+    >>> annotations_file = carat.util.example_beats_file(num_file=1)
+    >>> downbeats, downbeat_labs = carat.annotations.load_downbeats(annotations_file)
+    >>> downbeats[:3]
+    array([0.54857143, 2.33265306, 4.11530612])
+    >>> downbeat_labs[:3]
+    ['1.1', '2.1', '3.1']
 
 
-    >>> # load an example file from the samba dataset
-    >>> beats, beat_labs = annotations.load_beats('./material/data/samba/[0216]
-                                                  S2-TB2-03-SE.beats.txt', delimiter=' ')
-    >>> beats
-    array([ 2.088,  2.559,  3.012,  3.48 ,  3.933,  4.41 ,  4.867,  5.32 ,
-            5.771,  6.229,  6.69 ,  7.167,  7.633,  8.092,  8.545,  9.01 ,
-            9.48 ,  9.943, 10.404, 10.865, 11.322, 11.79 , 12.251, 12.714,
-           13.167, 13.624, 14.094, 14.559, 15.014, 15.473, 15.931, 16.4  ,
-           16.865, 17.331, 17.788, 18.249, 18.706, 19.167, 19.643, 20.096,
-           20.557, 21.018, 21.494, 21.945, 22.408, 22.869, 23.31 , 23.773,
-           24.235, 24.692, 25.151, 25.608, 26.063, 26.52 ])
-    >>> beat_labs
-    ['1', '2', '1', '2', '1', '2', '1', '2', '1', '2', '1', '2', '1', '2',
-     '1', '2', '1', '2', '1', '2', '1', '2', '1', '2', '1', '2', '1', '2',
-     '1', '2', '1', '2', '1', '2', '1', '2', '1', '2', '1', '2', '1', '2',
-     '1', '2', '1', '2', '1', '2', '1', '2', '1', '2', '1', '2']
-
-    >>> downbeats, downbeat_labs = annotations.load_downbeats('./material/data/samba/[0216]
-                                                              S2-TB2-03-SE.beats.txt', delimiter='
-                                                              ', downbeat_label='1')
+    >>> # load an included example file from the samba dataset:
+    >>> # http://www.smt.ufrj.br/~starel/datasets/brid.html
+    >>> annotations_file = carat.util.example_beats_file(num_file=2)
+    >>> downbeats, downbeat_labs = annotations.load_downbeats(annotations_file, delimiter=' ', downbeat_label='1')
     >>> downbeats
     array([ 2.088,  3.012,  3.933,  4.867,  5.771,  6.69 ,  7.633,  8.545,
             9.48 , 10.404, 11.322, 12.251, 13.167, 14.094, 15.014, 15.931,
