@@ -12,7 +12,7 @@ carat
 
 Documentation
 -------------
-See http://carat.github.io/carat/ for a complete reference manual and introductory tutorials.
+See [https://carat.readthedocs.io](https://carat.readthedocs.io/en/latest/) for a complete reference manual and introductory tutorials.
 
 
 Demonstration notebooks
@@ -43,7 +43,7 @@ pip install -e carat
 ```
 or
 ```
-git clone https://github.com/carat/carat.git
+git clone https://github.com/mrocamora/carat.git
 pip install -e carat
 ```
 
