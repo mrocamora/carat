@@ -5,9 +5,9 @@
 
 class CaratError(Exception):
     '''The root carat exception class'''
-    pass
+    # pass
 
 
 class ParameterError(CaratError):
     '''Exception class for mal-formed inputs'''
-    pass
+    # pass

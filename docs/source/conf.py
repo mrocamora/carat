@@ -34,9 +34,28 @@ release = '0.1.0'
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.viewcode',
               'numpydoc',
-              'sphinx.ext.autosummary']
+              'sphinx.ext.autosummary',
+              'sphinx_gallery.gen_gallery']
 
 autosummary_generate = True 
+
+# Galley
+sphinx_gallery_conf = {
+        'examples_dirs': 'examples/',
+        'gallery_dirs': 'auto_examples',
+        'backreferences_dir': False,
+        'reference_url': {
+            'sphinx_gallery': None,
+            'numpy': 'http://docs.scipy.org/doc/numpy/',
+            'np': 'http://docs.scipy.org/doc/numpy/',
+            'scipy': 'http://docs.scipy.org/doc/scipy/reference',
+            'matplotlib': 'http://matplotlib.org/',
+            'sklearn': 'http://scikit-learn.org/stable',
+        }
+    }
+
+# Generate plots for example sections
+numpydoc_use_plots = True
 
 
 # The master toctree document.

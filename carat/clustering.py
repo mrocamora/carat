@@ -43,14 +43,14 @@ def rhythmic_patterns(data, n_clusters=4, method='kmeans'):
     -------
     c_labs : np.ndarray
         cluster labels for each data point
-    c_centroids : np.ndarray 
+    c_centroids : np.ndarray
         cluster centroids
     c_method : sklearn.cluster
         sklearn cluster method object
 
     See Also
     --------
-    sklearn.cluster.KMeans        
+    sklearn.cluster.KMeans
     """
 
     if method == 'kmeans':

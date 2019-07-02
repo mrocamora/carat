@@ -15,22 +15,22 @@ Display
     plot_centroid
 """
 
-import warnings
 import numpy as np
 from pylab import get_cmap
 from matplotlib import colors
-from matplotlib.cm import gray_r
+import matplotlib.cm as cm
 from matplotlib.axes import Axes
-from matplotlib.ticker import Formatter
 from matplotlib.ticker import NullFormatter
 from librosa.display import TimeFormatter
 from . import util
+from .exceptions import ParameterError
 
-__all__ = ['wave_plot', 'map_show', 'feature_plot', 'embedding_plot', 'centroids_plot', 'plot_centroid']
+__all__ = ['wave_plot', 'map_show', 'feature_plot', 'embedding_plot',
+           'centroids_plot', 'plot_centroid']
 
 
 def wave_plot(y, sr=22050, x_axis='time', beats=None, beat_labs=None,
-             ax=None, **kwargs):
+              ax=None, **kwargs):
     '''Plot an audio waveform and beat labels (optinal).
 
 
@@ -97,7 +97,7 @@ def wave_plot(y, sr=22050, x_axis='time', beats=None, beat_labs=None,
 
 
 def feature_plot(feature, time, x_axis='time', beats=None, beat_labs=None,
-                ax=None, **kwargs):
+                 ax=None, **kwargs):
     '''Plot an audio waveform and beat labels (optinal).
 
 
@@ -316,7 +316,7 @@ def __plot_beats(beats, max_time, ax, beat_labs=None, **kwargs):
 
 
 def map_show(data, x_coords=None, y_coords=None, ax=None,
-            n_tatums=4, clusters=None, **kwargs):
+             n_tatums=4, clusters=None, **kwargs):
     '''Display a feature map.
 
     Parameters
@@ -365,7 +365,7 @@ def map_show(data, x_coords=None, y_coords=None, ax=None,
 
     '''
 
-    kwargs.setdefault('cmap', gray_r)
+    kwargs.setdefault('cmap', cm.get_cmap('gray_r'))
     kwargs.setdefault('rasterized', True)
     kwargs.setdefault('edgecolors', 'None')
     kwargs.setdefault('shading', 'flat')

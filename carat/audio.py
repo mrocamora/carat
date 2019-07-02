@@ -8,4 +8,3 @@ __all__ = ['load']
 
 # simply use librosa.load (this may change in the future)
 load = librosa.load
-

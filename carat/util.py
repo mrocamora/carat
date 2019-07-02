@@ -82,7 +82,8 @@ def STFT(x, window_length, hop, windowing_function=sp.hanning, dft_length=None,
 
     **Args**:
         window_len (float): length of the window in seconds (must be positive).
-        window (callable): a callable object that receives the window length in samples and returns a numpy array containing the windowing function samples.
+        window (callable): a callable object that receives the window length in samples and
+        returns a numpy array containing the windowing function samples.
         hop (float): frame hop between adjacent frames in seconds.
         final_time (positive integer): time (in seconds) up to which the spectrogram is calculated.
         zp_flag (bool): a flag indicating if the *Zero-Phase Windowing* should be performed.
@@ -429,12 +430,12 @@ def example_audio_file(num_file=None):
     Parameters
     ----------
     num_file : int
-        Number to select among the example files available. 
+        Number to select among the example files available.
 
     Returns
     -------
     filename : str
-        Path to the audio example file included with carat.
+        Path to the audio example file included with `carat`.
     '''
 
     if num_file == 1:
@@ -443,7 +444,7 @@ def example_audio_file(num_file=None):
         EXAMPLE_AUDIO = EXAMPLE_AUDIO2
     else:
         EXAMPLE_AUDIO = EXAMPLE_AUDIO2
-     
+
     return pkg_resources.resource_filename(__name__, EXAMPLE_AUDIO)
 
 
@@ -453,18 +454,18 @@ def example_beats_file(num_file=None):
     Examples
     --------
     >>> # Load beats and downbeats from the example audio file number 1
-    >>> beats, b_labs = carat.load_beats(carat.util.example_beats_file(num_file=1)) 
+    >>> beats, b_labs = carat.load_beats(carat.util.example_beats_file(num_file=1))
     >>> downbeats, d_labs = carat.load_downbeats(carat.util.example_beats_file(num_file=1))
 
     Parameters
     ----------
     num_file : int
-        Number to select among the example files available. 
+        Number to select among the example files available.
 
     Returns
     -------
     filename : str
-        Path to the beats annotations example file included with carat.
+        Path to the beats annotations example file included with `carat`.
     '''
 
     if num_file == 1:
@@ -473,5 +474,5 @@ def example_beats_file(num_file=None):
         EXAMPLE_BEATS = EXAMPLE_BEATS2
     else:
         EXAMPLE_BEATS = EXAMPLE_BEATS2
-     
+
     return pkg_resources.resource_filename(__name__, EXAMPLE_BEATS)

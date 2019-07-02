@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# pylint: disable=C0103
 """Version info"""
 
 import sys
@@ -46,4 +47,4 @@ def show_versions():
     print('')
     for dep in extra_deps:
         print('{}: {}'.format(dep, __get_mod_version(dep)))
-    pass
+    # pass

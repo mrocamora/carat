@@ -16,6 +16,7 @@ Getting started
 
     install
     tutorial
+    examples
 
 API documentation
 -----------------
