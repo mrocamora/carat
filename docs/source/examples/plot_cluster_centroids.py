@@ -25,7 +25,7 @@ import carat
 # First, we'll load one of the audio files included in `carat`.
 audio_path = carat.util.example_audio_file(num_file=1)
 
-y, sr = carat.audio.load(audio_path, sr=None)
+y, sr = carat.audio.load(audio_path)
 
 ##############################################
 # Next, we'll load the annotations provided for the example audio file.

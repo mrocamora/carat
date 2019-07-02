@@ -39,7 +39,7 @@ import carat
 # First, we'll load one of the audio files included in `carat`.
 audio_path = carat.util.example_audio_file(num_file=1)
 
-y, sr = carat.audio.load(audio_path, sr=None)
+y, sr = carat.audio.load(audio_path)
 
 ##############################################
 # Next, we'll load the annotations provided for the example audio file.
@@ -56,7 +56,6 @@ downbeats, downbeat_labs = carat.annotations.load_downbeats(annotations_path)
 # focuses on the low frequencies (20 to 200 Hz).
 acce, times, _ = carat.features.accentuation_feature(y, sr, minfreq=20, maxfreq=200)
 
-del y
 ##############################################
 # Next, we'll compute the feature map. Note that we have to provide the beats,
 # the downbeats, which were loaded from the annotations. Besides, the number of
@@ -67,10 +66,6 @@ n_tatums = 4
 map_acce, _, _, _ = carat.features.feature_map(acce, times, beats, downbeats, n_beats=n_beats,
                                                n_tatums=n_tatums)
 
-del acce
-del times
-del beats
-del downbeats
 ##############################################
 # Finally we plot the feature map for the low frequencies of the audio file.
 #
