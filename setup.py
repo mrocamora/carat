@@ -34,7 +34,9 @@ setup(
         'scipy >= 1.0.0',
         'scikit-learn >= 0.14.0',
         'soundfile >= 0.9.0',
-        'librosa >= 0.6.3' 
+        'librosa >= 0.6.3',
+        'matplotlib >= 2.0.0',
+        'sounddevice >= 0.3.13'
     ],
     extras_require={
         'docs': ['numpydoc', 'sphinx!=1.3.1', 'sphinx_rtd_theme',
