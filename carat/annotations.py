@@ -12,13 +12,14 @@ Reading and writing annotations
 
     load_beats
     load_downbeats
+    load_onsets
 
 """
 
 import csv
 import numpy as np
 
-__all__ = ['load_beats', 'load_downbeats']
+__all__ = ['load_beats', 'load_downbeats', 'load_onsets']
 
 def load_beats(labels_file, delimiter=',', times_col=0, labels_col=1):
     """Load annotated beats from text (csv) file.
@@ -183,3 +184,73 @@ def load_downbeats(labels_file, delimiter=',', times_col=0, labels_col=1, downbe
         downbeat_labs = [beat_labs[ind_downbeat] for ind_downbeat in ind_downbeats]
 
     return downbeat_times, downbeat_labs
+
+
+def load_onsets(labels_file, delimiter=',', times_col=0, labels_col=1):
+    """Load annotated onsets from text (csv) file.
+
+    Parameters
+    ----------
+    labels_file : str
+        name (including path) of the input file
+    delimiter : str
+        string used as delimiter in the input file
+    times_col : int
+        column index of the time data
+    labels_col : int
+        column index of the label data
+
+    Returns
+    -------
+    onset_times : np.ndarray
+        time instants of the onsets
+    onset_labels : list
+        labels at the onsets (e.g. '2', '2', '1', etc)
+
+    Examples
+    --------
+
+    Load an included example file from the candombe dataset.
+
+    >>> onsets_file = carat.util.example_onsets_file(num_file=1)
+    >>> onsets, onset_labs = carat.annotations.load_beats(onsets_file)
+    >>> onsets[0]
+    12.969002267
+    >>> onset_labs
+    []
+
+    Load an included example file from the samba dataset.
+    http://www.smt.ufrj.br/~starel/datasets/brid.html
+
+    >>> onsets_file = carat.util.example_onsets_file(num_file=2)
+    >>> onsets, onset_labs = carat.annotations.load_beats(onsets_file, delimiter='\t')
+    >>> onsets[0]
+    1.93
+    >>> onset_labs[0]
+    '2'
+
+    Notes
+    -----
+    It is assumed that the onset annotations are provided as a text file (csv).
+    Apart from the time data (mandatory) a label can be given for each onset (optional).
+    The time data is assumed to be given in seconds.
+    The labels may indicate onset type, such as stroke type (e.g. 'open-stick', 'muffled-hand'), or
+    a number for different onset class types (e.g. '1', '2').
+    """
+
+    # read beat time instants
+    onset_times = np.genfromtxt(labels_file, delimiter=delimiter, usecols=(times_col))
+
+    # read beat labels
+    with open(labels_file, 'r') as fi:
+        reader = csv.reader(fi, delimiter=delimiter)
+        # number of columns
+        ncol = len(next(reader))
+        # check if there are no labels
+        if ncol == 1:
+            onset_labels = []
+        else:
+            fi.seek(0)
+            onset_labels = [row[labels_col] for row in reader]
+
+    return onset_times, onset_labels

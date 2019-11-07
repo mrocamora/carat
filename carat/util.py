@@ -50,6 +50,9 @@ EXAMPLE_AUDIO1 = 'example_data/candombe/csic.1995_ansina1_01.wav'
 EXAMPLE_AUDIO2 = 'example_data/samba/[0216] S2-TB2-03-SE.wav'
 EXAMPLE_BEATS1 = 'example_data/candombe/csic.1995_ansina1_01.csv'
 EXAMPLE_BEATS2 = 'example_data/samba/[0216] S2-TB2-03-SE.beats.txt'
+EXAMPLE_ONSETS1 = 'example_data/candombe/Take_211_chico_onsets.csv'
+EXAMPLE_ONSETS2 = 'example_data/samba/[0216] S2-TB2-03-SE.onsets.txt'
+EXAMPLE_ONSETS3 = 'example_data/samba/[0216] S2-TB2-03-SE.onsets.csv'
 
 
 __all__ = ['find_nearest', 'STFT', 'hz2mel', 'mel2hz', 'deltas']
@@ -454,8 +457,8 @@ def example_beats_file(num_file=None):
     Examples
     --------
     >>> # Load beats and downbeats from the example audio file number 1
-    >>> beats, b_labs = carat.load_beats(carat.util.example_beats_file(num_file=1))
-    >>> downbeats, d_labs = carat.load_downbeats(carat.util.example_beats_file(num_file=1))
+    >>> beats, b_labs = carat.annotations.load_beats(carat.util.example_beats_file(num_file=1))
+    >>> downbeats, d_labs = carat.annotations.load_downbeats(carat.util.example_beats_file(num_file=1))
 
     Parameters
     ----------
@@ -476,3 +479,32 @@ def example_beats_file(num_file=None):
         EXAMPLE_BEATS = EXAMPLE_BEATS2
 
     return pkg_resources.resource_filename(__name__, EXAMPLE_BEATS)
+
+
+def example_onsets_file(num_file=None):
+    '''Get the path to an included example file of onsets annotations.
+
+    Examples
+    --------
+    >>> # Load onsets from the example file number 1
+    >>> onsets, onset_labs = carat.annotations.load_onsets(carat.util.example_onsets_file(num_file=1))
+
+    Parameters
+    ----------
+    num_file : int
+        Number to select among the example files available.
+
+    Returns
+    -------
+    filename : str
+        Path to the beats annotations example file included with `carat`.
+    '''
+
+    if num_file == 1:
+        EXAMPLE_ONSETS = EXAMPLE_ONSETS1
+    elif num_file == 2:
+        EXAMPLE_ONSETS = EXAMPLE_ONSETS2
+    else:
+        EXAMPLE_ONSETS = EXAMPLE_ONSETS3
+
+    return pkg_resources.resource_filename(__name__, EXAMPLE_ONSETS)
