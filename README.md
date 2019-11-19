@@ -20,6 +20,7 @@ Demonstration notebooks
 Some demonstrations of what you can do with carat:
 
 * [Rhythmic patterns demo notebook](http://nbviewer.ipython.org/github/mrocamora/carat/blob/master/examples/carat_rhythmic_patterns_demo.ipynb): how to extract rhythmic patterns from an audio recording.
+* [Microtiming patterns demo notebook](http://nbviewer.ipython.org/github/mrocamora/carat/blob/master/examples/carat_microtiming_patterns_demo.ipynb): how to extract microtiming patterns from an audio recording.
 
 
 Installation
