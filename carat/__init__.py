@@ -13,6 +13,7 @@ from . import util
 from . import audio
 from . import features
 from . import annotations
+from . import microtiming
 from . import clustering
 from . import display
 

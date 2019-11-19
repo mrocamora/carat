@@ -23,10 +23,11 @@ from matplotlib.axes import Axes
 from matplotlib.ticker import NullFormatter
 from librosa.display import TimeFormatter
 from . import util
+from . import microtiming
 from .exceptions import ParameterError
 
 __all__ = ['wave_plot', 'map_show', 'feature_plot', 'embedding_plot',
-           'centroids_plot', 'plot_centroid']
+           'centroids_plot', 'plot_centroid', 'onsets_in_grid_plot']
 
 
 def wave_plot(y, sr=22050, x_axis='time', beats=None, beat_labs=None,
@@ -295,6 +296,9 @@ def __plot_beats(beats, max_time, ax, beat_labs=None, **kwargs):
     kwargs['alpha'] = 0.3
     kwargs.setdefault('linewidth', 2)
 
+    # replace nan values to 0
+    beats = np.nan_to_num(beats)
+
     # consider beats (and labels) bellow max_time
     ind_beat = util.find_nearest(beats, max_time)
     new_beats = beats[:ind_beat]
@@ -309,8 +313,10 @@ def __plot_beats(beats, max_time, ax, beat_labs=None, **kwargs):
     ax2 = ax.twiny()
     ax2.set_xlim(ax.get_xlim())
     ax2.set_xticks(new_beats)
-    ax2.set_xticklabels(new_labs)
-    #ax2.set_xlabel("beats")
+    if beat_labs is not None:
+        ax2.set_xticklabels(new_labs)
+    else:
+        ax2.set_xticklabels([])
 
     return ax2
 
@@ -623,3 +629,119 @@ def __decorate_axis_embedding(axes, dim):
         axes.zaxis.set_major_formatter(NullFormatter())
     axes.xaxis.set_major_formatter(NullFormatter())
     axes.yaxis.set_major_formatter(NullFormatter())
+
+
+def onsets_in_grid_plot(onsets_in_grid, ax=None, mean_std=True, hist_ons=False,
+                        n_bins=100, fs=14, **kwargs):
+    '''Plot onsets in grid
+
+
+    Parameters
+    ----------
+    onsets_in_grid : list of np.ndarray
+        onsets assigned to metrical grid as a list of arrays, one element for each instrument
+
+    ax : matplotlib.axes.Axes or None
+        Axes to plot on instead of the default `plt.gca()`.
+
+    mean_std : bool
+        If `True`, then mean and std are plotted for each subdivision
+
+    hist_ons : bool
+        If `True`, then an histogram of all onsets is plotted.
+
+    n_bins : int
+        Number of bins to use for the histogram.
+
+    fs : int
+        Font size.
+
+    kwargs
+        Additional keyword arguments to `matplotlib.`
+
+    Returns
+    -------
+
+    See also
+    --------
+
+
+    Examples
+    --------
+    '''
+
+    kwargs.setdefault('color', 'seagreen')
+    kwargs.setdefault('alpha', 0.6)
+    kwargs.setdefault('marker', 'o')
+    kwargs.setdefault('markersize', 3)
+
+    # number of beats
+    num_beats = len(onsets_in_grid)
+
+    # top and bottom margins of the plot
+    margin_top = int(num_beats/10)
+    if hist_ons:
+        margin_bottom = 4 * margin_top
+    elif mean_std:
+        margin_bottom = 3 * margin_top
+    else:
+        margin_bottom = 2 * margin_top
+
+    # total height of the plot
+    total_height = margin_bottom + num_beats + margin_top
+
+    # number of subdivisions
+    num_subdivs = onsets_in_grid[0].shape[0]
+
+    # check axes and create it if needed
+    axes = __check_axes(ax)
+
+    # plot onsets at each beat
+    for ind in range(num_beats):
+        # onsets in current beat
+        onsets = onsets_in_grid[ind]
+
+        # plot the onsets at current subdivisio
+        out = axes.plot(onsets, ind * np.ones(num_subdivs) + margin_bottom,
+                        linestyle='None', **kwargs)
+
+    # configure tickers and labels
+    __decorate_axis_subdivisions(axes, num_subdivs, total_height)
+
+    if mean_std:
+        # fit a normal distribution to each subdivision
+        mus, stds = microtiming.onsets_to_normal_dist(onsets_in_grid)
+
+        # plot mean and stdev for each subdivision
+        for ind in range(num_subdivs):
+            axes.errorbar(mus[ind], (margin_bottom*2/3), xerr=stds[ind], fmt='.',
+                          capsize=1, color='royalblue')
+            axes.axvline(x=mus[ind], ymin=(margin_bottom*2/3)/total_height,
+                         ymax=(margin_bottom+num_beats+60)/total_height,
+                         linestyle='--', color='royalblue')
+            axes.text(mus[ind], (margin_bottom/10), "{:3.0f}".format(mus[ind]*100)+"%",
+                      color='royalblue', horizontalalignment='center',
+                      verticalalignment='bottom', fontsize=fs)
+
+    if hist_ons:
+        # flatten onsets to plot histogram
+        onsets_flattened = [val for sublist in onsets_in_grid for val in sublist]
+        axes.hist(onsets_flattened, bins=n_bins, density=False, alpha=0.2, facecolor='black')
+
+    return out
+
+
+def __decorate_axis_subdivisions(axes, num_subdivs, total_height, fs=14):
+    '''Configure axis ticks and labels for subdivisions plot'''
+
+    # x-ticks at every subdivision
+    x_ticks = np.linspace(0, 1, num_subdivs+1)
+    x_labels = ['.'+str(num+1) for num in range(num_subdivs)]
+    axes.set_xticks(x_ticks[:-1])
+    axes.set_xticklabels(x_labels, fontsize=fs)
+    axes.set_yticks([])
+    axes.tick_params(length=10, width=1)
+    axes.axis([-0.10, 1, 0, total_height])
+    axes.spines['right'].set_visible(False)
+    axes.spines['left'].set_visible(False)
+    axes.set_ylabel(r'beats $\longrightarrow$', fontsize=fs)

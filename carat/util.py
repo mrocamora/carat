@@ -47,12 +47,16 @@ import pkg_resources
 from .exceptions import ParameterError
 
 EXAMPLE_AUDIO1 = 'example_data/candombe/csic.1995_ansina1_01.wav'
-EXAMPLE_AUDIO2 = 'example_data/samba/[0216] S2-TB2-03-SE.wav'
+EXAMPLE_AUDIO2 = 'example_data/candombe/Take_211_chico.wav'
+EXAMPLE_AUDIO3 = 'example_data/samba/[0216] S2-TB2-03-SE.wav'
+
 EXAMPLE_BEATS1 = 'example_data/candombe/csic.1995_ansina1_01.csv'
-EXAMPLE_BEATS2 = 'example_data/samba/[0216] S2-TB2-03-SE.beats.txt'
-EXAMPLE_ONSETS1 = 'example_data/candombe/Take_211_chico_onsets.csv'
-EXAMPLE_ONSETS2 = 'example_data/samba/[0216] S2-TB2-03-SE.onsets.txt'
-EXAMPLE_ONSETS3 = 'example_data/samba/[0216] S2-TB2-03-SE.onsets.csv'
+EXAMPLE_BEATS2 = 'example_data/candombe/Take_211_chico_beats.csv'
+EXAMPLE_BEATS3 = 'example_data/samba/[0216] S2-TB2-03-SE.beats.txt'
+
+EXAMPLE_ONSETS1 = ''
+EXAMPLE_ONSETS2 = 'example_data/candombe/Take_211_chico_onsets.csv'
+EXAMPLE_ONSETS3 = 'example_data/samba/[0216] S2-TB2-03-SE.onsets.txt'
 
 
 __all__ = ['find_nearest', 'STFT', 'hz2mel', 'mel2hz', 'deltas']
@@ -445,8 +449,10 @@ def example_audio_file(num_file=None):
         EXAMPLE_AUDIO = EXAMPLE_AUDIO1
     elif num_file == 2:
         EXAMPLE_AUDIO = EXAMPLE_AUDIO2
+    elif num_file == 3:
+        EXAMPLE_AUDIO = EXAMPLE_AUDIO3
     else:
-        EXAMPLE_AUDIO = EXAMPLE_AUDIO2
+        EXAMPLE_AUDIO = EXAMPLE_AUDIO1
 
     return pkg_resources.resource_filename(__name__, EXAMPLE_AUDIO)
 
@@ -475,8 +481,10 @@ def example_beats_file(num_file=None):
         EXAMPLE_BEATS = EXAMPLE_BEATS1
     elif num_file == 2:
         EXAMPLE_BEATS = EXAMPLE_BEATS2
+    elif num_file == 3:
+        EXAMPLE_BEATS = EXAMPLE_BEATS3
     else:
-        EXAMPLE_BEATS = EXAMPLE_BEATS2
+        EXAMPLE_BEATS = EXAMPLE_BEATS1
 
     return pkg_resources.resource_filename(__name__, EXAMPLE_BEATS)
 
@@ -504,7 +512,9 @@ def example_onsets_file(num_file=None):
         EXAMPLE_ONSETS = EXAMPLE_ONSETS1
     elif num_file == 2:
         EXAMPLE_ONSETS = EXAMPLE_ONSETS2
-    else:
+    elif num_file == 3:
         EXAMPLE_ONSETS = EXAMPLE_ONSETS3
+    else:
+        EXAMPLE_ONSETS = EXAMPLE_ONSETS1
 
     return pkg_resources.resource_filename(__name__, EXAMPLE_ONSETS)
