@@ -9,8 +9,6 @@ Rhythmic patterns analysis example with GUI
 
 '''
 
-from __future__ import print_function
-
 import os
 import sys
 import argparse

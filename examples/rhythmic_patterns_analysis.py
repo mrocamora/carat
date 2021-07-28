@@ -9,8 +9,6 @@ Rhythmic patterns analysis example
 
 '''
 
-from __future__ import print_function
-
 import sys
 import argparse
 import matplotlib.pyplot as plt
