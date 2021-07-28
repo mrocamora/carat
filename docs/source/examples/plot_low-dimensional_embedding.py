@@ -18,7 +18,6 @@ This is based on the rhythmic patterns analysis proposed in [CIM2014]_.
 #   - matplotlib for visualization
 #   - Axes3D from mpl_toolkits.mplot3d for 3D plots
 #
-from __future__ import print_function
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import carat

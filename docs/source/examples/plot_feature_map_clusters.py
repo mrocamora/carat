@@ -17,7 +17,6 @@ This is based on the rhythmic patterns analysis proposed in [CIM2014]_.
 # Imports
 #   - matplotlib for visualization
 #
-from __future__ import print_function
 import matplotlib.pyplot as plt
 import carat
 
