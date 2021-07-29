@@ -15,7 +15,6 @@ This example shows how to load/plot an audio file and the corresponding beat ann
 # Imports
 #   - matplotlib for visualization
 #
-from __future__ import print_function
 import matplotlib.pyplot as plt
 import carat
 

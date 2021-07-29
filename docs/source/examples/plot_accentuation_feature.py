@@ -15,7 +15,6 @@ This example shows how to compute an accentuation feature from de audio waveform
 # Imports
 #   - matplotlib for visualization
 #
-from __future__ import print_function
 import matplotlib.pyplot as plt
 import carat
 

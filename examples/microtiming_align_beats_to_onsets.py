@@ -9,8 +9,6 @@ Align the location of beats to the location of onsets closest to the beats
 
 '''
 
-from __future__ import print_function
-
 import sys
 import argparse
 import matplotlib.pyplot as plt
