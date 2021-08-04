@@ -96,7 +96,7 @@ def manifold_learning(data, method='isomap', n_neighbors=7, n_components=3):
 
     if method == 'isomap':
         # fit manifold from data using isomap algorithm
-        method = manifold.Isomap(n_neighbors, n_components).fit(data)
+        method = manifold.Isomap(n_neighbors=n_neighbors, n_components=n_components).fit(data)
 
         # transform data to low-dimension representation
         embedding = method.transform(data)
