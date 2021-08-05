@@ -97,7 +97,7 @@ def accentuation_feature(signal, fs, sum_flag=True, log_flag=False, mel_flag=Tru
         # maximum filter
         max_spec = sp.ndimage.filters.maximum_filter(feature, size=(maxbins, 1))
         # init the diff array
-        diff = sp.zeros(feature.shape)
+        diff = np.zeros(feature.shape)
         # calculate difference between log spec and max filtered version
         diff[:, 1:] = (feature[:, 1:] - max_spec[:, : -1])
         # save feature data
@@ -427,7 +427,8 @@ def def_norm_feat_gen(data, max_period, p):
     def aux(i, win_size):
         fac = int(win_size % 2)
         h_len = int(win_size / 2)
-        aux = sp.linalg.norm(ext_data[i - h_len + ext_len : i + ext_len + h_len + fac], ord=p)
+        # was previously using sp.linalg.norm
+        aux = np.linalg.norm(ext_data[i - h_len + ext_len : i + ext_len + h_len + fac], ord=p)
         return ext_data[i + ext_len] / max(aux, 1e-20)
 
     return aux
