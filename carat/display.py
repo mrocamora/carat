@@ -383,7 +383,7 @@ def map_show(data, x_coords=None, y_coords=None, ax=None,
 
     # set the x and y coordinates
     y_coords = np.array(range(tatums+1))+0.5
-    x_coords = np.array(range(bars))+1
+    x_coords = np.array(range(bars+1))+1
 
     # check axes and create it if needed
     axes = __check_axes(ax)
