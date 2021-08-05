@@ -88,16 +88,16 @@ def accentuation_feature(signal, fs, sum_flag=True, log_flag=False, mel_flag=Tru
         feature, time, frequency = melSpectrogram(feature, time, frequency, **val_kw)
     else:
         # take the absolute value
-        feature = sp.absolute(feature)
+        feature = np.absolute(feature)
     # log magnitude (with compression parameter)
     if log_flag:
-        feature = 20*sp.log10(alpha * feature + 1)
+        feature = 20*np.log10(alpha * feature + 1)
     # maximum filter (and difference)
     if maxfilt_flag:
         # maximum filter
         max_spec = sp.ndimage.filters.maximum_filter(feature, size=(maxbins, 1))
         # init the diff array
-        diff = sp.zeros(feature.shape)
+        diff = np.zeros(feature.shape)
         # calculate difference between log spec and max filtered version
         diff[:, 1:] = (feature[:, 1:] - max_spec[:, : -1])
         # save feature data
@@ -302,7 +302,7 @@ def feature_time_quantize(feature, time, tatums, window=0.1):
     return quantized_feature
 
 def spectrogram(signal, fs, window_length=20e-3, hop=10e-3,
-                windowing_function=sp.hanning, dft_length=None, zp_flag=False):
+                windowing_function=np.hanning, dft_length=None, zp_flag=False):
     """ Calculates the Short-Time Fourier Transform a signal.
 
     Given an input signal, it calculates the DFT of frames of the signal and stores them
@@ -355,7 +355,7 @@ def melSpectrogram(in_spec, in_time, in_freq, nfilts=40, minfreq=20, maxfreq=Non
     if maxfreq is None:
         maxfreq = max(in_freq)
     (wts, frequency) = util.fft2mel(in_freq, nfilts, minfreq, maxfreq)
-    spec = sp.dot(wts, sp.sqrt(sp.absolute(in_spec)**2))
+    spec = np.dot(wts, np.sqrt(np.absolute(in_spec)**2))
     time = in_time
 
     # return
@@ -410,7 +410,7 @@ def sumFeatures(in_signal):
         - output: output feature signal
     """
     out_signal = np.copy(in_signal)
-    out_signal = sp.sum(out_signal, axis=0)
+    out_signal = np.sum(out_signal, axis=0)
     return out_signal
 
 
@@ -421,13 +421,14 @@ def def_norm_feat_gen(data, max_period, p):
         max_period += 1
     ext_len = int((max_period - 1) / 2)
     ext_data = data[1:ext_len + 1][::-1]
-    ext_data = sp.append(ext_data, data)
-    ext_data = sp.append(ext_data, data[-2:-ext_len - 2:-1])
+    ext_data = np.append(ext_data, data)
+    ext_data = np.append(ext_data, data[-2:-ext_len - 2:-1])
 
     def aux(i, win_size):
         fac = int(win_size % 2)
         h_len = int(win_size / 2)
-        aux = sp.linalg.norm(ext_data[i - h_len + ext_len : i + ext_len + h_len + fac], ord=p)
+        # was previously using sp.linalg.norm
+        aux = np.linalg.norm(ext_data[i - h_len + ext_len : i + ext_len + h_len + fac], ord=p)
         return ext_data[i + ext_len] / max(aux, 1e-20)
 
     return aux
