@@ -101,11 +101,17 @@ def beats_from_onsets(beat_annotations, onsets, tolerance=0.125, method='mean'):
     # estimate location of beats combining the onsets closest to annotated beat
     if method == 'mean':
         # mean of the onsets, i.e. 'democratic' vote
-        beats = np.nanmean(onsets_at_beats, axis=0)
+        if onsets_at_beats.shape[0] == 1: # a single drum
+            beats = onsets_at_beats[~(np.isnan(onsets_at_beats))]
+        else: # several drums
+            beats = np.nanmean(onsets_at_beats, axis=0)
 
     elif method == 'median':
         # median of the onsets, i.e. one of the onsets
-        beats = np.nanmedian(onsets_at_beats, axis=0)
+        if onsets_at_beats.shape[0] == 1: # a single drum
+            beats = onsets_at_beats[~(np.isnan(onsets_at_beats))]
+        else: # several drums
+            beats = np.nanmedian(onsets_at_beats, axis=0) 
 
     else:
         raise AttributeError("Method not implemented.")
