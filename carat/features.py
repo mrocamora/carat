@@ -35,6 +35,7 @@ Miscellaneous
     :toctree: generated/
 
     generate_tatum_grid
+    peak_detection
     halfWaveRectification
     calculateDelta
     sumFeatures
@@ -442,6 +443,81 @@ def normalize_features(data, win_len, p):
     for i in range(data.size):
         out[i] = aux(i, win_len)
     return out
+
+
+def peak_detection(feature, threshold=0.05, pre_avg=0, pos_avg=0, pre_max=1, pos_max=1):
+    """This function implements peak detection on an accentuation feature function. 
+
+    Following a method proposed in [1] and later modified in [2], a set of simple peak
+    selection rules are implemented in which onset candidates, apart from being a
+    local maximum, have to exceed a threshold that is a combination of a fixed and an
+    adaptive value.
+
+    The accentuation feature function has to fulfil the following two conditions:
+
+    ..math:: F(n) = \;\,\max\left\{SF(n-\hat{\omega}_{\textrm{pre}}:n+\hat{\omega}_{\textrm{pos}})\right\}
+    ..math:: F(n) &\geq \textrm{mean}\left\{SF(n-\bar{\omega}_{\textrm{pre}}:n+\bar{\omega}_{\textrm{pos}})\right\} + \delta
+
+    where delta is a fixed threshold and the omega parameters determine the width of the moving average and moving maximum filters, 
+    i.e. the number of previous (pre) and subsequent (pos) points involved.
+
+    **Args**:
+        - input: feature object
+        - threshold (float): threshold for peak-picking
+        - pre_avg (int): number of past frames for moving average
+        - pos_avg (int): number of future frames for moving average
+        - pre_max (int): number of past frames for moving maximum
+        - pos_max (int): number of past frames for moving maximum
+    **Returns**:
+        A numpy array with the indices of the detected peaks
+
+    **Raises**:
+
+    References
+    ----------
+    .. [1] Simon Dixon, "Onset detection revisited",
+           Proceedings of the 9th International Conference on Digital Audio 
+           Effects (DAFx), 2006.
+    .. [2] Sebastian Böck, Florian Krebs and Markus Schedl,
+           "Evaluating the Online Capabilities of Onset Detection Methods",
+           Proceedings of the 13th International Society for Music Information
+           Retrieval Conference (ISMIR), 2012.
+
+    Notes
+    -----
+    The code of this function is based on the universal peak-picking method of the madmom library.
+    """
+    # normalize feature function
+    data = feature / feature.max()
+    # length of moving average filter
+    avg_length = pre_avg + pos_avg + 1
+    # compute the moving average
+    if avg_length > 1:
+        # origin controls the placement of the filter
+        avg_origin = int(sp.floor((pre_avg - pos_avg) / 2))
+        # moving average
+        mov_avg = sp.ndimage.filters.uniform_filter(data, avg_length,
+                                                    mode='constant',
+                                                    origin=avg_origin)
+        else:
+            # do not use a moving average
+            mov_avg = 0
+        # candidates above the moving average + the threshold
+        candidates = data * (data >= mov_avg + threshold)
+        # length of moving maximum filter
+        max_length = pre_max + pos_max + 1
+        # compute the moving maximum
+        if max_length > 1:
+            # origin controls the placement of the filter
+            max_origin = int(sp.floor((pre_max - pos_max) / 2))
+            # moving maximum
+            mov_max = sp.ndimage.filters.maximum_filter(candidates, max_length,
+                                                        mode='constant',
+                                                        origin=max_origin)
+            # candidates are peak positions
+            candidates *= (candidates == mov_max)
+        # return indices
+        return sp.nonzero(candidates)[0], mov_avg, mov_max
 
 
 #def accentuation_feature(y, sr=22050, hop_length=512, n_fft=2048,
