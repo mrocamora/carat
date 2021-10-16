@@ -51,33 +51,52 @@ def accentuation_feature(signal, fs, sum_flag=True, log_flag=False, mel_flag=Tru
                          alpha=1000, maxfilt_flag=False, maxbins=3, **kwargs):
     """Compute accentuation feature from audio signal.
 
+    Parameters
+    ----------
+    signal : np.array
+        input audio signal
+    fs : int
+        sampling rate
+    sum_flag : bool
+        true if the features are to be summed for each frame
+    log_flag : bool
+        true if the features energy are to be converted to dB
+    mel_flag : bool
+        true if the features are to be mapped in the Mel scale
+    alpha : int
+        compression parameter for dB conversion - log10(alpha*abs(S)+1)
+    maxfilt_flag : bool
+        true if a maximum filtering is applied to the feature
+    maxbins : int
+        number of frequency bins for maximum filter size
+    **kwargs :  (check)
+        keyword arguments passed down to each of the functions used
 
+    Returns
+    -------
+    feature : np.array
+        feature values
+    time : np.array
+        time values
+
+    Notes
+    -----
     Based on the log-power Mel spectrogram [1].
 
-    [1] Böck, Sebastian, and Gerhard Widmer.
+    This performs the following calculations to the input signal:
+
+        input->STFT->(Mel scale)->(Log)->(Max filtering)->Diff->HWR->(Sum)
+
+    Parenthesis denote optional steps.
+    
+    References
+    ----------
+
+    .. [1] Böck, Sebastian, and Gerhard Widmer.
            "Maximum filter vibrato suppression for onset detection."
            16th International Conference on Digital Audio Effects,
            Maynooth, Ireland. 2013.
 
-        This performs the following calculations to the input signal:
-
-        input->STFT->(Mel scale)->(Log)->(Max filtering)->Diff->HWR->(Sum)
-
-        Parenthesis denote optional steps.
-
-    **Args**:
-        - input: signal
-        - fs: sampling rate
-        - sum_flag (bool): true if the features are to be summed for each frame.
-        - log_flag (bool): true if the features energy are to be converted to dB.
-        - mel_flag (bool): true if the features are to be mapped in the Mel scale.
-        - alpha (int): compression parameter for dB conversion - log10(alpha*abs(S)+1).
-        - maxfilt_flag (bool): true if a maximum filtering is applied to the feature.
-        - maxbins (int): number of frequency bins for maximum filter size
-        - ``**kw`` : these keyword arguments are passed down to each of the functions used
-    **Returns**:
-        - feature (numpy array): feature values
-        - time (numpy array): time values
     """
 
     # STFT
@@ -120,15 +139,32 @@ def feature_map(feature, time, beats, downbeats, n_beats=4, n_tatums=4,
                 norm_flag=True, pnorm=8, window=0.1):
     """Compute feature map from accentuation feature signal.
 
+    Parameters
+    ----------
+    feature : np.array
+        feature signal
+    time : np.array (check)
+        time instants of the feature values
+    beats : np.array (check)
+        time instants of the tactus beats
+    downbeat : (check)
+        (check)
+    n_beats : int (check)
+        number of beats per cycle
+    n_tatums : int (check)
+        number of tatums per tactus beat
+    pnorm : int (check)
+        p-norm order for normalization
 
-    Based on the feature map introduced in [1].
-
-    [1] Rocamora, Jure, Biscainho
-           "Tools for detection and classification of piano drum patterns from candombe recordings."
-           9th Conference on Interdisciplinary Musicology (CIM),
-           Berlin, Germany. 2014.
-
-
+    Returns
+    -------
+    features_map : (check)
+    quantized_feature : (check)
+    tatums : (check)
+    normalized_feature : (check)
+  
+    Notes
+    -----
     The accentuation feature is organized into a feature map. First, the feature signal is
     time-quantized to the rhythm metric structure by considering a grid of tatum pulses equally
     distributed within the annotated beats. The corresponding feature value is taken as the maximum
@@ -136,15 +172,17 @@ def feature_map(feature, time, beats, downbeats, n_beats=4, n_tatums=4,
     whose coordinates correspond to the tatum pulses of the rhythm cycle (or bar). Finally, a
     feature map of the cycle-length rhythmic patterns of the audio file is obtained by building a
     matrix whose columns are consecutive feature vectors.
+    
+    Based on the feature map introduced in [1].
 
-    **Args**:
-        - feature (numpy array): feature signal
-        - ``**kw``: these keyword arguments are passed down to each of the functions used
-    **Returns**:
-        - :
+    References
+    ----------
 
-    **Raises**:
-        -
+    .. [1] Rocamora, Jure, Biscainho
+           "Tools for detection and classification of piano drum patterns from candombe recordings."
+           9th Conference on Interdisciplinary Musicology (CIM),
+           Berlin, Germany. 2014.
+
     """
 
     normalized_feature = np.copy(feature)
@@ -169,33 +207,44 @@ def feature_map(feature, time, beats, downbeats, n_beats=4, n_tatums=4,
 def feature_normalization(feature, time, beats, n_tatums=4, pnorm=8):
     """Local amplitude normalization of the feature signal.
 
-    Based on the feature map introduced in [1] and detailed in [2].
+    Parameters
+    ----------
+    feature : np.array
+        feature signal values
+    time : np.array
+        time instants of the feature values
+    beats : np.array
+        time instants of the tactus beats
+    n_tatums : int
+        number of tatums per tactus beat
+    pnorm : int
+        p-norm order for normalization
+    
+    Returns
+    -------
+    norm_feature : np.array
+        normalized feature signal values
 
-    [1] Rocamora, Jure, Biscainho
-           "Tools for detection and classification of piano drum patterns from candombe recordings."
-           9th Conference on Interdisciplinary Musicology (CIM),
-           Berlin, Germany. 2014.
-
-    [2] Rocamora, Cancela, Biscainho
-           "Information theory concepts applied to the analysis of rhythm in recorded music with
-           recurrent rhythmic patterns."
-           Journal of the AES, 67(4), 2019.
-
+    Notes
+    -----
     A local amplitude normalization is carried out to preserve intensity variations of the
     rhythmic patterns while discarding long-term fluctuations in dynamics. A p-norm within
     a local window is applied. The window width is proportional to the beat period.
 
-    **Args**:
-        - feature (numpy array): feature signal values
-        - time (numpy array): time instants of the feature values
-        - beats (numpy array): time instants of the tactus beats
-        - n_tatums (int): number of tatums per tactus beat
-        - pnorm (int): p-norm order for normalization
-    **Returns**:
-        - :
+    Based on the feature map introduced in [1] and detailed in [2].
+    
+    References
+    ----------
+    .. [1] Rocamora, Jure, Biscainho
+           "Tools for detection and classification of piano drum patterns from candombe recordings."
+           9th Conference on Interdisciplinary Musicology (CIM),
+           Berlin, Germany. 2014.
 
-    **Raises**:
-        - norm_feature (numpy array): normalized feature signal values
+    .. [2] Rocamora, Cancela, Biscainho
+           "Information theory concepts applied to the analysis of rhythm in recorded music with
+           recurrent rhythmic patterns."
+           Journal of the AES, 67(4), 2019.
+
     """
 
     # estimate tatum period from annotations for normalization
@@ -221,12 +270,16 @@ def generate_tatum_grid(beats, downbeats, n_tatums):
 
     Parameters
     ----------
-    labels_time (np.ndarray) : time instants of the tactus beats
-    labels (list)            : labels at the tactus beats (e.g. 1.1, 1.2, etc)
+    labels_time : np.ndarray
+        time instants of the tactus beats
+    labels : list
+        labels at the tactus beats (e.g. 1.1, 1.2, etc)
 
     Returns
     -------
-    tatum_time (np.ndarray)  : time instants of the tatum beats
+    tatum_time : np.ndarray
+        time instants of the tatum beats
+    
     """
 
     # first and last downbeat
@@ -259,20 +312,27 @@ def generate_tatum_grid(beats, downbeats, n_tatums):
 def feature_time_quantize(feature, time, tatums, window=0.1):
     """Time quantization of the feature signal to a tatum grid.
 
+    Parameters
+    ----------
+    feature : np.array
+        feature signal values
+    time : np.array
+        time instants of the feature values
+    tatums : np.array
+        time instants of the tatum grid
+    
+    Returns
+    -------
+    quantized_feature : np.array
+        time quantized feature signal values
+
+    Notes
+    -----
     The feature signal is time-quantized to the rhythm metric structure by considering a grid of
     tatum pulses equally distributed within the tactus beats. The feature value assigned to each
     tatum time instant is obtained as the maximum value of the feature signal within a certain
     window centered at the tatum time instant. Default value for the total window lenght is 100 ms.
 
-    **Args**:
-        - feature (numpy array): feature signal values
-        - time (numpy array): time instants of the feature values
-        - tatums (numpy array): time instants of the tatum grid
-    **Returns**:
-        - :
-
-    **Raises**:
-        - quantized_feature (numpy array): time quantized feature signal values
     """
     # number of tatum instants
     num_tatums = tatums.size
@@ -309,18 +369,26 @@ def spectrogram(signal, fs, window_length=20e-3, hop=10e-3,
     Given an input signal, it calculates the DFT of frames of the signal and stores them
     in bi-dimensional Scipy array.
 
-    **Args**:
-        - window_len (float):length of the window in seconds (must be positive).
-        - window (callable): a callable object that receives the window length in samples
-          and returns a numpy array containing the windowing function samples.
-        - hop (float): frame hop between adjacent frames in seconds.
-        - zp_flag (bool): a flag indicating if the *Zero-Phase Windowing* should be
-          performed.
+    Parameters
+    ----------
+    window_len : float
+        length of the window in seconds (must be positive).
+    window : callable
+        a callable object that receives the window length in samples
+        and returns a numpy array containing the windowing function samples.
+    hop : float
+        frame hop between adjacent frames in seconds.
+    zp_flag : bool
+        a flag indicating if the *Zero-Phase Windowing* should be performed.
 
-    **Returns**:
-        - spec (numpy array): spectrogram data
-        - time (numpy array): time in seconds of each frame
-        - frequnecy (numpy array): frequency grid
+    Returns
+    -------
+    spec : np.array
+        spectrogram data
+    time : np.array
+        time in seconds of each frame
+    frequency : np.array
+        frequency grid
 
     """
     # Converting window_length and hop from seconds to number of samples:
@@ -336,21 +404,29 @@ def spectrogram(signal, fs, window_length=20e-3, hop=10e-3,
 
 
 def melSpectrogram(in_spec, in_time, in_freq, nfilts=40, minfreq=20, maxfreq=None):
-    """This function converts a Spectrogram with linearly spaced frequency components
+    """ Converts a Spectrogram with linearly spaced frequency components
     to the Mel scale.
 
         Given an input signal, it calculates the DFT of frames of the signal and stores
         them in bi-dimensional Scipy array.
 
+    Parameters
+    ----------
+    in_spec : np.array (check)
+    in_time : np.array
+    in_freq : np.array 
+    nfilts : int
+    minfreq : int
+    maxfreq : int
 
-    **Args**:
-        - window_len (float): length of the window in seconds (must be positive).
-        - window (callable): a callable object that receives the window length in samples
-          and returns a numpy array containing the windowing function samples.
-    **Returns**:
-        - spec (numpy array): mel-spectrogram data
-        - time (numpy array): time in seconds of each frame
-        - frequnecy (numpy array): frequency grid
+    Returns
+    -------
+    spec : np.array
+        mel-spectrogram data
+    time : np.array
+        time in seconds of each frame
+    frequency : np.array
+        frequency grid
 
     """
     if maxfreq is None:
@@ -368,16 +444,19 @@ def halfWaveRectification(in_signal):
 
         All feature values below zero are assigned to zero.
 
-    **Args**:
-        - input: feature object
-        - delta_filter_length (int): length of the filter used to calculate the Delta
-          coefficients. Must be an odd number.
+    Parameters
+    ----------
+    in_signal : np.array (check)
+        feature object
 
-    **Returns**:
-        - output: numpy array
+    Returns
+    -------
+    out_signal : np.array (check)
 
-    **Raises**:
-        - ValueError when the input features are complex.
+    Raises
+    ------
+    ValueError when the input features are complex.
+    
     """
     out_signal = np.copy(in_signal)
     if out_signal.dtype != complex:
@@ -390,12 +469,19 @@ def halfWaveRectification(in_signal):
 def calculateDelta(in_signal, delta_filter_length=3):
     """ This function calculates the delta coefficients of a given feature.
 
-    **Args**:
-        - input: input feature signal
-        - delta_filter_length (int): length of the filter used to calculate the Delta
-          coefficients. Must be an odd number.
-    **Returns**:
-        - output: output feature signal
+    Parameters
+    ----------
+    in_signal : np.array (check)
+        input feature signal
+    delta_filter_length : int
+        length of the filter used to calculate the Delta coefficients.
+        Must be an odd number.
+
+    Returns
+    -------
+    out_signal : np.array (check)
+        output feature signal
+        
     """
     out_signal = np.copy(in_signal)
     out_signal = util.deltas(out_signal, delta_filter_length)
@@ -405,11 +491,18 @@ def calculateDelta(in_signal, delta_filter_length=3):
 def sumFeatures(in_signal):
     """ This function sums all features along frames.
 
-    **Args**:
-        - input: input feature signal
-    **Returns**:
-        - output: output feature signal
+    Parameters
+    ----------
+    in_signal : np.array (check)
+        input feature signal
+
+    Returns
+    -------
+    out_signal : np.array
+        output feature signal
+
     """
+
     out_signal = np.copy(in_signal)
     out_signal = np.sum(out_signal, axis=0)
     return out_signal
@@ -448,6 +541,31 @@ def normalize_features(data, win_len, p):
 def peak_detection(feature, threshold=0.05, pre_avg=0, pos_avg=0, pre_max=1, pos_max=1):
     """This function implements peak detection on an accentuation feature function. 
 
+    Parameters
+    ----------
+    feature : np.array (check)
+        feature object
+    threshold : float
+        threshold for peak-picking
+    pre_avg : int
+        number of past frames for moving average
+    pos_avg : int
+        number of future frames for moving average
+    pre_max : int
+        number of past frames for moving maximum
+    pos_max : int
+        number of past frames for moving maximum
+
+    Returns
+    -------
+        candidates_0 : (check)
+        mov_avg : (check)
+        mov_max : (check)
+
+    Notes
+    -----
+    The code of this function is based on the universal peak-picking method of the madmom library.
+    
     Following a method proposed in [1] and later modified in [2], a set of simple peak
     selection rules are implemented in which onset candidates, apart from being a
     local maximum, have to exceed a threshold that is a combination of a fixed and an
@@ -461,18 +579,6 @@ def peak_detection(feature, threshold=0.05, pre_avg=0, pos_avg=0, pre_max=1, pos
     where delta is a fixed threshold and the omega parameters determine the width of the moving average and moving maximum filters, 
     i.e. the number of previous (pre) and subsequent (pos) points involved.
 
-    **Args**:
-        - input: feature object
-        - threshold (float): threshold for peak-picking
-        - pre_avg (int): number of past frames for moving average
-        - pos_avg (int): number of future frames for moving average
-        - pre_max (int): number of past frames for moving maximum
-        - pos_max (int): number of past frames for moving maximum
-    **Returns**:
-        A numpy array with the indices of the detected peaks
-
-    **Raises**:
-
     References
     ----------
     .. [1] Simon Dixon, "Onset detection revisited",
@@ -483,10 +589,8 @@ def peak_detection(feature, threshold=0.05, pre_avg=0, pos_avg=0, pre_max=1, pos
            Proceedings of the 13th International Society for Music Information
            Retrieval Conference (ISMIR), 2012.
 
-    Notes
-    -----
-    The code of this function is based on the universal peak-picking method of the madmom library.
     """
+    
     # normalize feature function
     data = feature / feature.max()
     # length of moving average filter
@@ -517,7 +621,8 @@ def peak_detection(feature, threshold=0.05, pre_avg=0, pos_avg=0, pre_max=1, pos
             # candidates are peak positions
             candidates *= (candidates == mov_max)
         # return indices
-        return np.nonzero(candidates)[0], mov_avg, mov_max
+        candidates_0 = np.nonzero(candidates)[0]
+        return candidates_0, mov_avg, mov_max
 
 
 #def accentuation_feature(y, sr=22050, hop_length=512, n_fft=2048,
