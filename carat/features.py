@@ -499,9 +499,9 @@ def peak_detection(feature, threshold=0.05, pre_avg=0, pos_avg=0, pre_max=1, pos
         mov_avg = sp.ndimage.filters.uniform_filter(data, avg_length,
                                                     mode='constant',
                                                     origin=avg_origin)
-        else:
-            # do not use a moving average
-            mov_avg = 0
+    else:
+        # do not use a moving average
+        mov_avg = 0
         # candidates above the moving average + the threshold
         candidates = data * (data >= mov_avg + threshold)
         # length of moving maximum filter
