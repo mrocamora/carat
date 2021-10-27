@@ -26,7 +26,7 @@ Some demonstrations of what you can do with carat:
 Installation
 ------------
 
-The latest stable release (v0.1.2) is available on PyPI, and you can install it by
+The latest stable release is available on PyPI, and you can install it by
 ```
 pip install carat
 ```
