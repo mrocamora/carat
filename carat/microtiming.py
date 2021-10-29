@@ -26,20 +26,6 @@ __all__ = ['beats_from_onsets', 'normalize_onsets', 'define_metrical_grid',
 def beats_from_onsets(beat_annotations, onsets, tolerance=0.125, method='mean'):
     """Estimation of the location of beats from the onsets.
 
-    Based on the 'democratic' estimation of the beginning of each rhythm cycle introduced in [1].
-    This is the method applied in the study of entrainment in candombe music presented in [2].
-
-    [1] Polak, London, Jacobi
-           "Both Isochronous and Non-Isochronous Metrical Subdivision Afford Precise and Stable
-           Ensemble Entrainment: A Corpus Study of Malian Jembe Drumming"
-           Frontiers in Neuroscience. 10:285. 2016. doi: 10.3389/fnins.2016.00285
-
-    [2] Rocamora, Jure, Polak, Jacobi
-           "Interpersonal music entrainment in Afro-Uruguayan candombe drumming"
-           44th International Council for Traditional Music (ICTM) World Conference,
-           Limerick, Irleand. 2017.
-
-
     Parameters
     ----------
     beat_annotations : np.ndarray
@@ -56,6 +42,24 @@ def beats_from_onsets(beat_annotations, onsets, tolerance=0.125, method='mean'):
     -------
     beats : np.ndarray
         location of beats estimated from onsets
+
+    Notes
+    -----
+    Based on the 'democratic' estimation of the beginning of each rhythm cycle introduced in [1].
+    This is the method applied in the study of entrainment in candombe music presented in [2].
+
+    References
+    ----------
+    .. [1] Polak, London, Jacobi
+           "Both Isochronous and Non-Isochronous Metrical Subdivision Afford Precise and Stable
+           Ensemble Entrainment: A Corpus Study of Malian Jembe Drumming"
+           Frontiers in Neuroscience. 10:285. 2016. doi: 10.3389/fnins.2016.00285
+
+    .. [2] Rocamora, Jure, Polak, Jacobi
+           "Interpersonal music entrainment in Afro-Uruguayan candombe drumming"
+           44th International Council for Traditional Music (ICTM) World Conference,
+           Limerick, Irleand. 2017.
+
     """
 
     # number of beats to estimate
@@ -200,6 +204,8 @@ def define_metrical_grid(num_subdivs=4, subdivs_type='isochronous'):
     ----------
     num_subdivs : int
         number of subdivisions of the beat
+    subdivs_type : str
+        type of subdivisions of the beat
 
     Returns
     -------
@@ -219,7 +225,6 @@ def define_metrical_grid(num_subdivs=4, subdivs_type='isochronous'):
 def grid_isochronous_beat(num_subdivs=4):
     """Returns an isochronous grid for beat subdivisions
 
-
     Parameters
     ----------
     num_subdivs : int
@@ -229,6 +234,7 @@ def grid_isochronous_beat(num_subdivs=4):
     -------
     grid_vals : np.ndarray
         grid values for the subdivisions of the beat
+
     """
 
     # grid values
@@ -255,6 +261,7 @@ def onsets_to_metrical_grid(onsets, metrical_grid, tolerance=0.125):
     -------
     onsets_in_grid : list of np.ndarray
         onsets assigned to metrical grid as a list of arrays, one element for each instrument
+
     """
 
 
@@ -331,6 +338,7 @@ def onsets_to_normal_dist(onsets_in_grid):
         list of mean values for the onsets in each subdivision
     stds : list of floats
         list of standard deviation values for the onsets in each subdivision
+
     """
 
     # number of subdivisions
