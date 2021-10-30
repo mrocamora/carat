@@ -12,7 +12,7 @@ Compute accentuation feature example
 import sys
 import argparse
 import matplotlib.pyplot as plt
-import carat
+from carat import audio, features, annotations, display
 
 def compute_features(input_file, annotations_file, delimiter):
     '''Accentuation feature computation
@@ -28,23 +28,23 @@ def compute_features(input_file, annotations_file, delimiter):
 
     # 1. load the wav file
     print('Loading audio file ...', input_file)
-    y, sr = carat.audio.load(input_file, sr=None, duration=10.0)
+    y, sr = audio.load(input_file, sr=None, duration=10.0)
 
     # 2. compute accentuation feature
     print('Computing accentuation feature ...')
-    acce, times, _ = carat.features.accentuation_feature(y, sr, minfreq=20, maxfreq=200)
+    acce, times, _ = features.accentuation_feature(y, sr, minfreq=20, maxfreq=200)
 
     # 3. load beat annotations
     print('Loading beat annotations ...', annotations_file)
-    beats, beat_labs = carat.annotations.load_beats(annotations_file, delimiter=delimiter)
+    beats, beat_labs = annotations.load_beats(annotations_file, delimiter=delimiter)
 
     # 4. plot everything
     # plot waveform
     ax1 = plt.subplot(2, 1, 1)
-    carat.display.wave_plot(y, sr, ax=ax1, beats=beats, beat_labs=beat_labs)
+    display.wave_plot(y, sr, ax=ax1, beats=beats, beat_labs=beat_labs)
     # plot accentuation feature
     ax2 = plt.subplot(2, 1, 2, sharex=ax1)
-    carat.display.feature_plot(acce, times, ax=ax2, beats=beats, beat_labs=beat_labs)
+    display.feature_plot(acce, times, ax=ax2, beats=beats, beat_labs=beat_labs)
 
     plt.show()
 

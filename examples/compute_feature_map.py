@@ -12,7 +12,7 @@ Compute accentuation feature map example
 import sys
 import argparse
 import matplotlib.pyplot as plt
-import carat
+from carat import audio, annotations, features, display
 
 def compute_feature_map(input_file, annotations_file, delimiter, downbeat_label,
                         n_tatums):
@@ -35,29 +35,29 @@ def compute_feature_map(input_file, annotations_file, delimiter, downbeat_label,
 
     # 1. load the wav file
     print('Loading audio file ...', input_file)
-    y, sr = carat.audio.load(input_file, sr=None)
+    y, sr = audio.load(input_file, sr=None)
 
     # 2. load beat and downbeat annotations
     print('Loading beat and downbeat annotations ...', annotations_file)
-    beats, _ = carat.annotations.load_beats(annotations_file, delimiter=delimiter)
-    downbeats, _ = carat.annotations.load_downbeats(annotations_file, delimiter=delimiter,
+    beats, _ = annotations.load_beats(annotations_file, delimiter=delimiter)
+    downbeats, _ = annotations.load_downbeats(annotations_file, delimiter=delimiter,
                                                     downbeat_label=downbeat_label)
     # number of beats per bar
     n_beats = int(round(beats.size/downbeats.size))
 
     # 3. compute accentuation feature
     print('Computing accentuation feature ...')
-    acce, times, _ = carat.features.accentuation_feature(y, sr, minfreq=20, maxfreq=200)
+    acce, times, _ = features.accentuation_feature(y, sr, minfreq=20, maxfreq=200)
 
     # 4. compute feature map
     print('Computing feature map ...')
-    map_acce, _, _, _ = carat.features.feature_map(acce, times, beats, downbeats,
+    map_acce, _, _, _ = features.feature_map(acce, times, beats, downbeats,
                                                    n_beats=n_beats, n_tatums=n_tatums)
 
     # 5. plot feature map
     plt.figure()
     ax1 = plt.subplot(211)
-    carat.display.map_show(map_acce, ax=ax1, n_tatums=n_tatums)
+    display.map_show(map_acce, ax=ax1, n_tatums=n_tatums)
 
     plt.show()
 

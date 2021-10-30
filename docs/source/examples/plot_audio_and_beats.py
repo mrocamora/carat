@@ -16,7 +16,7 @@ This example shows how to load/plot an audio file and the corresponding beat ann
 #   - matplotlib for visualization
 #
 import matplotlib.pyplot as plt
-import carat
+from carat import util, audio, annotations, display
 
 ##############################################
 # First, we'll load one of the audio files included in `carat`.
@@ -25,18 +25,18 @@ import carat
 # **Note 1:** By default, `carat` will resample the signal to 22050Hz, but this can disabled
 # by saying `sr=None` (`carat` uses librosa for loading audio files, so it inherits
 # all its functionality and behaviour).
-audio_path = carat.util.example_audio_file(num_file=1)
+audio_path = util.example_audio_file(num_file=1)
 
-y, sr = carat.audio.load(audio_path, duration=10.0)
+y, sr = audio.load(audio_path, duration=10.0)
 
 ##############################################
 # Next, we'll load the annotations provided for the example audio file.
 # We get the path to the annotations file corresponding to example number 1,
 # and then we load beats and downbeats, along with their labels.
-annotations_path = carat.util.example_beats_file(num_file=1)
+annotations_path = util.example_beats_file(num_file=1)
 
-beats, beat_labs = carat.annotations.load_beats(annotations_path)
-downbeats, downbeat_labs = carat.annotations.load_downbeats(annotations_path)
+beats, beat_labs = annotations.load_beats(annotations_path)
+downbeats, downbeat_labs = annotations.load_downbeats(annotations_path)
 
 ##############################################
 # **Note 2:** It is assumed that the beat annotations are provided as a text file (csv).
@@ -66,9 +66,9 @@ print(downbeat_labs[:3])
 
 plt.figure(figsize=(12, 6))
 ax1 = plt.subplot(2, 1, 1)
-carat.display.wave_plot(y, sr, ax=ax1)
+display.wave_plot(y, sr, ax=ax1)
 ax2 = plt.subplot(2, 1, 2, sharex=ax1)
-carat.display.wave_plot(y, sr, ax=ax2, beats=downbeats, beat_labs=downbeat_labs)
+display.wave_plot(y, sr, ax=ax2, beats=downbeats, beat_labs=downbeat_labs)
 plt.tight_layout()
 
 plt.show()

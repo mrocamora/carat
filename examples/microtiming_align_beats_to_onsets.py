@@ -12,7 +12,7 @@ Align the location of beats to the location of onsets closest to the beats
 import sys
 import argparse
 import matplotlib.pyplot as plt
-import carat
+from carat import audio, annotations, microtiming, display
 
 def align_beats_to_onsets(audio_file, beat_annotations_file, onset_annotations_file, delimiter):
     '''Align the location of beats to the location of onsets closest to the beats
@@ -30,26 +30,26 @@ def align_beats_to_onsets(audio_file, beat_annotations_file, onset_annotations_f
 
     # 1. load the wav file
     print('Loading audio file ...', audio_file)
-    y, sr = carat.audio.load(audio_file, sr=None, duration=30.0)
+    y, sr = audio.load(audio_file, sr=None, duration=30.0)
 
     # 2. load beat annotations
     print('Loading beat annotations ...', beat_annotations_file)
-    beats, _ = carat.annotations.load_beats(beat_annotations_file, delimiter=delimiter)
+    beats, _ = annotations.load_beats(beat_annotations_file, delimiter=delimiter)
 
     # 3. load onset annotations
     print('Loading onset annotations ...', onset_annotations_file)
-    onsets, _ = carat.annotations.load_onsets(onset_annotations_file, delimiter=delimiter)
+    onsets, _ = annotations.load_onsets(onset_annotations_file, delimiter=delimiter)
 
     # 4. compute beats from onsets
     print('Computing beats from onsets ...')
-    beat_ons = carat.microtiming.beats_from_onsets(beats, onsets)
+    beat_ons = microtiming.beats_from_onsets(beats, onsets)
 
     # 5. plot everything
     ax1 = plt.subplot(2, 1, 1)
-    carat.display.wave_plot(y, sr, ax=ax1, beats=beats)
+    display.wave_plot(y, sr, ax=ax1, beats=beats)
     # plot aligned beats
     ax2 = plt.subplot(2, 1, 2, sharex=ax1)
-    carat.display.wave_plot(y, sr, ax=ax2, beats=beat_ons)
+    display.wave_plot(y, sr, ax=ax2, beats=beat_ons)
 
 
     plt.show()
