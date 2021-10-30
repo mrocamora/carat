@@ -66,12 +66,15 @@ def find_nearest(array, value):
 
     Parameters
     ----------
-    array (numpy.ndarray)  : array
-    value (float)          : value
+    array : np.ndarray
+    	input array
+    value : float
+    	value
 
     Returns
     -------
-    idx (int)              : index of nearest value in the array
+    idx : int
+    	index of nearest value in the array
     """
 
     idx = (np.abs(array-value)).argmin()
@@ -86,22 +89,30 @@ def STFT(x, window_length, hop, windowing_function=np.hanning, dft_length=None,
     Given an input signal, it calculates the DFT of frames of the signal and stores them
     in bi-dimensional Scipy array.
 
-    **Args**:
-        window_len (float): length of the window in seconds (must be positive).
-        window (callable): a callable object that receives the window length in samples and
-        returns a numpy array containing the windowing function samples.
-        hop (float): frame hop between adjacent frames in seconds.
-        final_time (positive integer): time (in seconds) up to which the spectrogram is calculated.
-        zp_flag (bool): a flag indicating if the *Zero-Phase Windowing* should be performed.
+    Parameters
+    ----------
+    window_len : float
+	length of the window in seconds (must be positive).
+    window : callable
+	a callable object that receives the window length in samples and
+	returns a numpy array containing the windowing function samples.
+    hop : float
+	frame hop between adjacent frames in seconds.
+    final_time : int
+	time (in seconds) up to which the spectrogram is calculated (must be positive).
+    zp_flag : bool
+	a flag indicating if the *Zero-Phase Windowing* should be performed.
 
-    **Returns**:
-	spec: numpy array
-	time: numpy array
-	frequency: numpy array
-
-    **Raises**:
-
+    Returns
+    -------
+    spec : np.array
+	(missing)
+    time : np.array
+	(missing)
+    frequency : np.array
+	(missing)
     """
+
     # Checking input:
     if x.ndim != 1:
         raise AttributeError("Data must be one-dimensional.")
@@ -141,23 +152,35 @@ def segmentSignal(signal, window_len, hop):
     in bi-dimensional Scipy array.
 
 
-    **Args**:
-        signal (array-like): object to be windowed. Must be a one-dimensional array-like object.
-        window_len (int): window size in samples.
-        hop (int): frame hop between adjacent frames in seconds.
+    Parameters
+    ----------
+    signal : array-like
+	object to be windowed. Must be a one-dimensional array-like object.
+    window_len : int
+	window size in samples.
+    hop : int
+	frame hop between adjacent frames in seconds.
 
-    **Returns**:
-        A 2-D numpy array containing the windowed signal. Each element of this array X
-        can be defined as:
+    Returns
+    -------
+    part_sig : np.array
+	2-D array containing the windowed signal. 
+		
+    Notes
+    -----
+    Each element of the output array X can be defined as:
 
         X[m,n] = x[n+Hm]
 
-        where, H is the HOP in samples, 0<=n<=N, N = window_len, and 0<m<floor(((len(x)-N)/H)+1).
+    where, H is the HOP in samples, 0<=n<=N, N = window_len, and 0<m<floor(((len(x)-N)/H)+1).
 
-    **Raises**:
-        AttributeError if signal is not one-dimensional.
-        ValueError if window_len or hop  are not strictly positives.
+    Raises
+    ------
+    AttributeError if signal is not one-dimensional.
+    ValueError if window_len or hop  are not strictly positives.
+
     """
+
     if(window_len <= 0 or hop <= 0):
         raise ValueError("window_len and hop values must be strictly positive numbers.")
     if signal.ndim != 1:
@@ -177,18 +200,25 @@ def segmentSignal(signal, window_len, hop):
 def __get_segment(y, idx_ini, idx_end):
     """ Get a segment of an array, given by initial and ending indexes.
 
-    **Args**:
-        y (numpy array): Must be a one-dimensional array.
-        idx_ini (int): initial index.
-        idx_end (int): ending index.
+    Parameters
+    ----------
+    y : np.array
+		one-dimensional array.
+    idx_ini : int
+		initial index.
+    idx_end : int
+		ending index.
 
-    **Returns**:
-        segment (numpy array): segment of the signal.
+    Returns
+    -------
+    segment : np.array
+	segment of the signal.
 
-    **Raises**:
-        AttributeError if y is not a one-dimensional numpy array.
-        ValueError if idx_ini or idx_end fall outside the signal bounds.
-        ValueError if idx_ini >= idx_end.
+    Raises
+    ------
+    AttributeError if y is not a one-dimensional numpy array.
+    ValueError if idx_ini or idx_end fall outside the signal bounds.
+    ValueError if idx_ini >= idx_end.
     """
 
     if not isinstance(y, np.ndarray):
@@ -213,19 +243,27 @@ def __get_segment(y, idx_ini, idx_end):
 def get_time_segment(y, time, time_ini, time_end):
     """ Get a segment of an array, given by initial and ending indexes.
 
-    **Args**:
-        y (numpy array): signal array. Must be a one-dimensional array.
-        time (numpy array): corresponding time. Must be a one-dimensional array.
-        time_ini (int): initial time value.
-        time_end (int): ending time value.
+    Parameters
+    ----------
+    y : np.array
+    	signal array (must be one-dimensional).
+    time : np.array
+    	corresponding time (must be one-dimensional).
+    time_ini : int 
+    	initial time value.
+    time_end : int  
+    	ending time value.
 
-    **Returns**:
-        segment (numpy array): segment of the signal.
+    Returns
+    -------
+    segment : np.array
+    	segment of the signal.
 
-    **Raises**:
-        AttributeError if y or time is not a one-dimensional numpy array.
-        ValueError if idx_ini or idx_end fall outside the signal bounds.
-        ValueError if idx_ini >= idx_end.
+    Raises
+    ------
+    AttributeError if y or time is not a one-dimensional numpy array.
+    ValueError if idx_ini or idx_end fall outside the signal bounds.
+    ValueError if idx_ini >= idx_end.
     """
 
     if not isinstance(y, np.ndarray):
@@ -259,20 +297,28 @@ def get_time_segment(y, time, time_ini, time_end):
 
 def beat2signal(y, time, beats, ind_beat):
     """ Get the signal fragment corresponding to a beat given by index ind_beat.
-        If instead of beats, downbeats are used, then a bar is returned.
+        If instead of beats, downbeats are used, then a measure is returned.
 
-    **Args**:
-        y (numpy array): signal array. Must be a one-dimensional array.
-        time (numpy array): corresponding time. Must be a one-dimensional array.
-        beats (numpy array): time instants of the beats.
-        ind_beat (int): index of the desired beat.
+    Parameters
+    ----------
+    y : np.array
+    	signal array (must be one-dimensional).
+    time : np.array
+    	corresponding time (must be one-dimensional).
+    beats : np.array
+    	time instants of the beats.
+    ind_beat : int
+    	index of the desired beat.
 
-    **Returns**:
-        beat_segment (numpy array): segment of the signal corresponding to the beat.
+    Returns
+    -------
+    beat_segment : np.array
+    	segment of the signal corresponding to the beat (or measure).
 
-    **Raises**:
-        AttributeError if y or time is not a one-dimensional numpy array.
-        ValueError if ind_beat fall outside the beats bounds.
+    Raises
+    ------
+    AttributeError if y or time is not a one-dimensional numpy array.
+    ValueError if ind_beat fall outside the beats bounds.
     """
 
     if not isinstance(y, np.ndarray):
@@ -309,17 +355,26 @@ def beat2signal(y, time, beats, ind_beat):
 
 
 def fft2mel(freq, nfilts, minfreq, maxfreq):
-    """ This method returns a 2-D Numpy array of weights that map a linearly spaced spectrogram
+    """ Returns a 2-D Numpy array of weights that maps a linearly spaced spectrogram
     to the Mel scale.
 
-    **Args**:
-        freq (1-D Numpy array): frequency of the components of the DFT.
-        nfilts (): number of output bands.
-        minfreq (): frequency of the first MEL coefficient.
-        maxfreq (): frequency of the last MEL coefficient.
+    Parameters
+    ----------
+    freq : np.array
+    	frequency of the components of the DFT (must be one-dimensional).
+    nfilts : 
+    	number of output bands.
+    minfreq : 
+    	frequency of the first MEL coefficient.
+    maxfreq : 
+    	frequency of the last MEL coefficient.
 
-    **Returns**:
-        The center frequencies in Hz of the Mel bands.
+    Returns
+    -------
+    wts : (check)
+    	(check)
+    binfrqs : (check)
+        center frequencies in Hz of the Mel bands.
 
         """
     minmel = hz2mel(minfreq)
@@ -341,11 +396,15 @@ def fft2mel(freq, nfilts, minfreq, maxfreq):
 def hz2mel(f_hz):
     """ Converts a given frequency in Hz to the Mel scale.
 
-    **Args**:
-        f_hz (Numpy array): Array containing the frequencies in HZ that should be converted.
+    Parameters
+    ----------
+    f_hz : np.array
+	array of frequencies in HZ that should be converted.
 
-    **Returns**:
-        A Numpy array (of same shape as f_zh) containing the converted frequencies.
+    Returns
+    -------
+    z_mel : np.array
+        array (of same shape as f_zh) containing the converted frequencies.
 
     """
     f_0 = 0
@@ -359,13 +418,18 @@ def hz2mel(f_hz):
 
 
 def mel2hz(z_mel):
-    """ Converts a given frequency in the Mel scale to Hz scale.
+    """ Converts a given frequency in the Mel scale to Hz.
 
-    **Args**:
-        z_mel (Numpy array): Array of frequencies in the Mel scale that should be converted.
+    Parameters
+    ----------
+    z_mel : np.array
+	array of frequencies in the Mel scale that should be converted.
 
-    **Returns**:
-        A Numpy array (of same shape as z_mel) containing the converted frequencies.
+    Returns
+    -------
+    f_zh : np.array
+        array (of same shape as z_mel) containing the converted frequencies.
+
     """
     f_0 = 0
     f_sp = 200.0/3.0
@@ -377,7 +441,20 @@ def mel2hz(z_mel):
 
 
 def deltas(x, w=3):
-    """ this function estimates the derivative of x
+    """ estimates the derivative of x
+    
+    Parameters
+    ----------
+    x : (check)
+	(check)
+    w : (check)
+	(check)
+
+    Returns
+    -------
+    d : (check)
+        (check)
+
     """
     if x.ndim == 1:
         y = x.reshape((-1, 1)).T
@@ -401,8 +478,19 @@ def deltas(x, w=3):
 
 
 def getValidKeywords(kw, func):
-    """ This function returns a dictionary containing the keywords arguments in initial_kw
-        that are valid for function func.
+    """ returns a dictionary containing the keywords arguments (in a list?) valid for a function.
+
+    Parameters
+    ----------
+    kw : (check) 
+    	(check)
+    func : (check)
+    	(check)
+    
+    Returns
+    -------
+    filename : str
+        Path to the audio example file included with `carat`.
     """
     import inspect
     valid_kw = {}
@@ -422,6 +510,16 @@ def getValidKeywords(kw, func):
 def example_audio_file(num_file=None):
     '''Get the path to an included audio example file.
 
+    Parameters
+    ----------
+    num_file : int
+        Number to select among the example files available.
+
+    Returns
+    -------
+    filename : str
+        Path to the audio example file included with `carat`.
+
     Examples
     --------
     >>> # Load the waveform from the default example track
@@ -433,15 +531,6 @@ def example_audio_file(num_file=None):
     >>> # Load the waveform from the example track number 2
     >>> y, sr = carat.audio.load(carat.util.example_audio_file(num_file=2))
 
-    Parameters
-    ----------
-    num_file : int
-        Number to select among the example files available.
-
-    Returns
-    -------
-    filename : str
-        Path to the audio example file included with `carat`.
     '''
 
     if num_file == 1:
@@ -459,12 +548,6 @@ def example_audio_file(num_file=None):
 def example_beats_file(num_file=None):
     '''Get the path to an included example file of beats annotations.
 
-    Examples
-    --------
-    >>> # Load beats and downbeats from the example audio file number 1
-    >>> beats, b_labs = carat.annotations.load_beats(carat.util.example_beats_file(num_file=1))
-    >>> downbeats, d_labs = carat.annotations.load_downbeats(carat.util.example_beats_file(num_file=1))
-
     Parameters
     ----------
     num_file : int
@@ -474,6 +557,13 @@ def example_beats_file(num_file=None):
     -------
     filename : str
         Path to the beats annotations example file included with `carat`.
+
+    Examples
+    --------
+    >>> # Load beats and downbeats from the example audio file number 1
+    >>> beats, b_labs = carat.annotations.load_beats(carat.util.example_beats_file(num_file=1))
+    >>> downbeats, d_labs = carat.annotations.load_downbeats(carat.util.example_beats_file(num_file=1))
+    
     '''
 
     if num_file == 1:
