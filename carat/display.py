@@ -34,33 +34,22 @@ def wave_plot(y, sr=22050, x_axis='time', beats=None, beat_labs=None,
               ax=None, **kwargs):
     '''Plot an audio waveform and beat labels (optinal).
 
-
     Parameters
     ----------
     y : np.ndarray
         audio time series
-
     sr : number > 0 [scalar]
         sampling rate of `y`
-
     x_axis : str {'time', 'off', 'none'} or None
         If 'time', the x-axis is given time tick-marks.
-
     ax : matplotlib.axes.Axes or None
         Axes to plot on instead of the default `plt.gca()`.
-
     kwargs
         Additional keyword arguments to `matplotlib.`
 
     Returns
     -------
 
-    See also
-    --------
-
-
-    Examples
-    --------
     '''
 
     kwargs.setdefault('color', 'royalblue')
@@ -106,28 +95,18 @@ def feature_plot(feature, time, x_axis='time', beats=None, beat_labs=None,
     ----------
     feature : np.ndarray
         feature time series
-
     time : np.ndarray
         time instant of the feature values
-
     x_axis : str {'time', 'off', 'none'} or None
         If 'time', the x-axis is given time tick-marks.
-
     ax : matplotlib.axes.Axes or None
         Axes to plot on instead of the default `plt.gca()`.
-
     kwargs
         Additional keyword arguments to `matplotlib.`
 
     Returns
     -------
 
-    See also
-    --------
-
-
-    Examples
-    --------
     '''
 
     kwargs.setdefault('color', 'seagreen')
@@ -170,13 +149,10 @@ def centroids_plot(centroids, n_tatums=4, ax_list=None, **kwargs):
     ----------
     centroids: np.ndarray
         centroids of the rhythmic patterns clusters
-
     n_tatums : int
         Number of tatums (subdivisions) per tactus beat
-
     ax_list : list of matplotlib.axes.Axes or None, one element per centroid
         Axes to plot on instead of the default `plt.gca()`.
-
     kwargs
         Additional keyword arguments to `matplotlib.`
 
@@ -184,12 +160,6 @@ def centroids_plot(centroids, n_tatums=4, ax_list=None, **kwargs):
     -------
     ax : list of matplotlib.axes.Axes
 
-    See also
-    --------
-
-
-    Examples
-    --------
     '''
     # number of centroids
     n_centroids = len(centroids)
@@ -216,25 +186,16 @@ def plot_centroid(centroid, n_tatums=4, ax=None, **kwargs):
     ----------
     centroid : np.ndarray
         centroid feature values
-
     n_tatums : int
         Number of tatums (subdivisions) per tactus beat
-
     ax : matplotlib.axes.Axes or None
         Axes to plot on instead of the default `plt.gca()`.
-
     kwargs
         Additional keyword arguments to `matplotlib.`
 
     Returns
     -------
 
-    See also
-    --------
-
-
-    Examples
-    --------
     '''
 
     kwargs.setdefault('color', 'seagreen')
@@ -262,33 +223,22 @@ def plot_centroid(centroid, n_tatums=4, ax=None, **kwargs):
 def __plot_beats(beats, max_time, ax, beat_labs=None, **kwargs):
     '''Plot beat labels.
 
-
     Parameters
     ----------
     beats : np.ndarray
         audio time series
-
     beat_labs : list
         beat labels
-
     x_axis : str {'time', 'off', 'none'} or None
         If 'time', the x-axis is given time tick-marks.
-
     ax : matplotlib.axes.Axes or None
         Axes to plot on instead of the default `plt.gca()`.
-
     kwargs
         Additional keyword arguments to `matplotlib.`
 
     Returns
     -------
 
-    See also
-    --------
-
-
-    Examples
-    --------
     '''
 
     kwargs['color'] = 'black'
@@ -329,27 +279,19 @@ def map_show(data, x_coords=None, y_coords=None, ax=None,
     ----------
     data : np.ndarray
         Feature map to display
-
     x_coords : np.ndarray [shape=data.shape[1]+1]
     y_coords : np.ndarray [shape=data.shape[0]+1]
-
         Optional positioning coordinates of the input data.
-
     ax : matplotlib.axes.Axes or None
         Axes to plot on instead of the default `plt.gca()`.
-
     n_tatums : int
         Number of tatums (subdivisions) per tactus beat
-
     clusters : np.ndarray
         Array indicating cluster number for each pattern of the input data.
         If provided (not None) the clusters area displayed with colors.
-
     kwargs : additional keyword arguments
         Arguments passed through to `matplotlib.pyplot.pcolormesh`.
-
         By default, the following options are set:
-
             - `cmap=gray_r`
             - `rasterized=True`
             - `edgecolors='None'`
@@ -360,14 +302,9 @@ def map_show(data, x_coords=None, y_coords=None, ax=None,
     axes
         The axis handle for the figure.
 
-
     See Also
     --------
     matplotlib.pyplot.pcolormesh
-
-
-    Examples
-    --------
 
     '''
 
@@ -420,31 +357,22 @@ def embedding_plot(data, clusters=None, ax=None, **kwargs):
     ----------
     data : np.ndarray
         Low-embedding data points
-
     ax : matplotlib.axes.Axes or None
         Axes to plot on instead of the default `plt.gca()`.
-
     clusters : np.ndarray
         Array indicating cluster number for each point of the input data.
         If provided (not None) the clusters area displayed with colors.
-
     kwargs : additional keyword arguments
         Arguments passed through to `matplotlib.pyplot.pcolormesh`.
-
 
     Returns
     -------
     axes
         The axis handle for the figure.
 
-
     See Also
     --------
     matplotlib.pyplot.pcolormesh
-
-
-    Examples
-    --------
 
     '''
 
@@ -500,8 +428,14 @@ def __check_axes(axes):
 
 
 def __check_axes_list(n_axes, ax_list=None):
-    '''Check if "ax_list" is a list of length n_axes
-       and each element is an instance of an axis object.
+    '''Check if a list has a given length and each element is an instance of an axis object.
+
+    Parameters
+    ----------
+    n_axes : int
+    
+    ax_list : 
+    
     '''
     if ax_list is None:
         import matplotlib.pyplot as plt
@@ -600,13 +534,10 @@ def __decorate_axis_centroid(axis, c_tatums=16, n_tatums=4, beat_ticks=True):
     Parameters
     ----------
     axis : matplotlib.axes.Axes or None
-
     c_tatums : int
         Number of tatums (subdivisions) in centroid
-
     n_tatums : int
         Number of tatums (subdivisions) per tactus beat
-
     beat_ticks : bool
         If `True`, then labels are shown only at ticks corresponding to beats
 
@@ -635,39 +566,26 @@ def onsets_in_grid_plot(onsets_in_grid, ax=None, mean_std=True, hist_ons=False,
                         n_bins=100, fs=14, **kwargs):
     '''Plot onsets in grid
 
-
     Parameters
     ----------
     onsets_in_grid : list of np.ndarray
         onsets assigned to metrical grid as a list of arrays, one element for each instrument
-
     ax : matplotlib.axes.Axes or None
         Axes to plot on instead of the default `plt.gca()`.
-
     mean_std : bool
         If `True`, then mean and std are plotted for each subdivision
-
     hist_ons : bool
         If `True`, then an histogram of all onsets is plotted.
-
     n_bins : int
         Number of bins to use for the histogram.
-
     fs : int
         Font size.
-
     kwargs
         Additional keyword arguments to `matplotlib.`
 
     Returns
     -------
 
-    See also
-    --------
-
-
-    Examples
-    --------
     '''
 
     kwargs.setdefault('color', 'seagreen')
@@ -732,7 +650,17 @@ def onsets_in_grid_plot(onsets_in_grid, ax=None, mean_std=True, hist_ons=False,
 
 
 def __decorate_axis_subdivisions(axes, num_subdivs, total_height, fs=14):
-    '''Configure axis ticks and labels for subdivisions plot'''
+    '''Configure axis ticks and labels for subdivisions plot
+    
+    Parameters
+    ----------
+    axes : 
+    num_subdivs : 
+    total_height : 
+    fs : int
+        Font size
+    
+    '''
 
     # x-ticks at every subdivision
     x_ticks = np.linspace(0, 1, num_subdivs+1)
