@@ -3,6 +3,7 @@ Contributors
 
 * Martín Rocamora <https://github.com/mrocamora>
 * Luis Jure <https://github.com/luisjure>
+* Jimena Arruti <https://github.com/jimearruti>
 
 Some feature extraction code was based on <https://github.com/lonnes/RhythmicAnalysis> by Leonardo Nunes and Martín Rocamora.
 
