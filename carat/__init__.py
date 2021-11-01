@@ -8,14 +8,14 @@ from .version import version as __version__
 from .version import show_versions
 
 # And all the carat sub-modules
-#from ._cache import cache
-#from . import util
-#from . import audio
-#from . import features
-#from . import annotations
-#from . import microtiming
-#from . import clustering
-#from . import display
+# from ._cache import cache
+from . import util
+from . import audio
+from . import features
+from . import annotations
+from . import microtiming
+from . import clustering
+from . import display
 
 # Exporting exception classes at the top level
 #from .util.exceptions import *  # pylint: disable=wildcard-import
