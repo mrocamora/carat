@@ -21,7 +21,8 @@ from matplotlib import colors
 import matplotlib.cm as cm
 from matplotlib.axes import Axes
 from matplotlib.ticker import NullFormatter
-from librosa.display import TimeFormatter
+from matplotlib.ticker import Formatter, ScalarFormatter
+#from librosa.display import TimeFormatter
 from . import util
 from . import microtiming
 from .exceptions import ParameterError
@@ -673,3 +674,99 @@ def __decorate_axis_subdivisions(axes, num_subdivs, total_height, fs=14):
     axes.spines['right'].set_visible(False)
     axes.spines['left'].set_visible(False)
     axes.set_ylabel(r'beats $\longrightarrow$', fontsize=fs)
+
+
+class TimeFormatter(Formatter):
+    """A tick formatter for time axes.
+    Automatically switches between seconds, minutes:seconds,
+    or hours:minutes:seconds.
+    Parameters
+    ----------
+    lag : bool
+        If ``True``, then the time axis is interpreted in lag coordinates.
+        Anything past the midpoint will be converted to negative time.
+    unit : str or None
+        Abbreviation of the physical unit for axis labels and ticks.
+        Either equal to `s` (seconds) or `ms` (milliseconds) or None (default).
+        If set to None, the resulting TimeFormatter object adapts its string
+        representation to the duration of the underlying time range:
+        `hh:mm:ss` above 3600 seconds; `mm:ss` between 60 and 3600 seconds;
+        and `ss` below 60 seconds.
+    See also
+    --------
+    matplotlib.ticker.Formatter
+    Examples
+    --------
+    For normal time
+    >>> import matplotlib.pyplot as plt
+    >>> times = np.arange(30)
+    >>> values = np.random.randn(len(times))
+    >>> fig, ax = plt.subplots()
+    >>> ax.plot(times, values)
+    >>> ax.xaxis.set_major_formatter(librosa.display.TimeFormatter())
+    >>> ax.set(xlabel='Time')
+    Manually set the physical time unit of the x-axis to milliseconds
+    >>> times = np.arange(100)
+    >>> values = np.random.randn(len(times))
+    >>> fig, ax = plt.subplots()
+    >>> ax.plot(times, values)
+    >>> ax.xaxis.set_major_formatter(librosa.display.TimeFormatter(unit='ms'))
+    >>> ax.set(xlabel='Time (ms)')
+    For lag plots
+    >>> times = np.arange(60)
+    >>> values = np.random.randn(len(times))
+    >>> fig, ax = plt.subplots()
+    >>> ax.plot(times, values)
+    >>> ax.xaxis.set_major_formatter(librosa.display.TimeFormatter(lag=True))
+    >>> ax.set(xlabel='Lag')
+    """
+
+    def __init__(self, lag=False, unit=None):
+
+        if unit not in ["s", "ms", None]:
+            raise ParameterError("Unknown time unit: {}".format(unit))
+
+        self.unit = unit
+        self.lag = lag
+
+    def __call__(self, x, pos=None):
+        """Return the time format as pos"""
+
+        _, dmax = self.axis.get_data_interval()
+        vmin, vmax = self.axis.get_view_interval()
+
+        # In lag-time axes, anything greater than dmax / 2 is negative time
+        if self.lag and x >= dmax * 0.5:
+            # In lag mode, don't tick past the limits of the data
+            if x > dmax:
+                return ""
+            value = np.abs(x - dmax)
+            # Do we need to tweak vmin/vmax here?
+            sign = "-"
+        else:
+            value = x
+            sign = ""
+
+        if self.unit == "s":
+            s = "{:.3g}".format(value)
+        elif self.unit == "ms":
+            s = "{:.3g}".format(value * 1000)
+        else:
+            if vmax - vmin > 3600:
+                # Hours viz
+                s = "{:d}:{:02d}:{:02d}".format(
+                    int(value / 3600.0),
+                    int(np.mod(value / 60.0, 60)),
+                    int(np.mod(value, 60)),
+                )
+            elif vmax - vmin > 60:
+                # Minutes viz
+                s = "{:d}:{:02d}".format(int(value / 60.0), int(np.mod(value, 60)))
+            elif vmax - vmin >= 1:
+                # Seconds viz
+                s = "{:.2g}".format(value)
+            else:
+                # Milliseconds viz
+                s = "{:.3f}".format(value)
+
+        return "{:s}{:s}".format(sign, s)
