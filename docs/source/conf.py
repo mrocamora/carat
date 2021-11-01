@@ -12,19 +12,31 @@
 #
 import os
 import sys
+from pathlib import Path
 import sphinx
-sys.path.insert(0, os.path.abspath('../../'))
+
+#sys.path.insert(0, os.path.abspath('../../'))
+
+srcpath = os.path.abspath(Path(os.path.dirname(__file__)) / '../../')
+sys.path.insert(0, srcpath)
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'carat'
-copyright = '2019, carat developers'
-author = 'carat developers'
+copyright = '2021, carat development team'
+author = 'The carat development team'
 
-# The full version, including alpha/beta/rc tags
-release = '0.1.0'
+from importlib.machinery import SourceFileLoader
 
+carat_version = SourceFileLoader(
+    "carat.version", os.path.abspath(Path(srcpath) / 'carat' / 'version.py')
+).load_module()
+
+# The short X.Y version.
+version = carat_version.version
+# The full version, including alpha/beta/rc tags.
+release = carat_version.version
 
 # -- General configuration ---------------------------------------------------
 
@@ -43,7 +55,7 @@ autosummary_generate = True
 sphinx_gallery_conf = {
         'examples_dirs': 'examples/',
         'gallery_dirs': 'auto_examples',
-        'backreferences_dir': False,
+        'backreferences_dir': None,
         'reference_url': {
             'sphinx_gallery': None,
             'numpy': 'http://docs.scipy.org/doc/numpy/',
