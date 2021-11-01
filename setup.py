@@ -34,7 +34,7 @@ setup(
         'scipy >= 1.2.0',
         'scikit-learn >= 0.19.1',
         'soundfile >= 0.10.2',
-        'librosa >= 0.7.0',
+        'librosa >= 0.8.0',
         'matplotlib >= 2.0.0',
         'sounddevice >= 0.3.13'
     ],
