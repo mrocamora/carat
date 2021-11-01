@@ -13,7 +13,7 @@ import sys
 import argparse
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-import carat
+from carat import audio, annotations, features, clustering, display
 
 def rhythmic_patterns_analysis(input_file, annotations_file, delimiter,
                                downbeat_label, n_tatums, n_clusters):
@@ -36,51 +36,51 @@ def rhythmic_patterns_analysis(input_file, annotations_file, delimiter,
 
     # 1. load the wav file
     print('Loading audio file ...', input_file)
-    y, sr = carat.audio.load(input_file, sr=None)
+    y, sr = audio.load(input_file, sr=None)
 
     # 2. load beat and downbeat annotations
     print('Loading beat and downbeat annotations ...', annotations_file)
-    beats, _ = carat.annotations.load_beats(annotations_file, delimiter=delimiter)
-    downbeats, _ = carat.annotations.load_downbeats(annotations_file, delimiter=delimiter,
+    beats, _ = annotations.load_beats(annotations_file, delimiter=delimiter)
+    downbeats, _ = annotations.load_downbeats(annotations_file, delimiter=delimiter,
                                                     downbeat_label=downbeat_label)
     # number of beats per bar
     n_beats = int(round(beats.size/downbeats.size))
 
     # 3. compute accentuation feature
     print('Computing accentuation feature ...')
-    acce, times, _ = carat.features.accentuation_feature(y, sr, minfreq=20, maxfreq=200)
+    acce, times, _ = features.accentuation_feature(y, sr, minfreq=20, maxfreq=200)
 
     # 4. compute feature map
     print('Computing feature map ...')
-    map_acce, _, _, _ = carat.features.feature_map(acce, times, beats, downbeats,
+    map_acce, _, _, _ = features.feature_map(acce, times, beats, downbeats,
                                                    n_beats=n_beats, n_tatums=n_tatums)
 
     # 5. cluster rhythmic patterns
     print('Clustering rhythmic patterns ...')
-    cluster_labs, centroids, _ = carat.clustering.rhythmic_patterns(map_acce, n_clusters=n_clusters)
+    cluster_labs, centroids, _ = clustering.rhythmic_patterns(map_acce, n_clusters=n_clusters)
 
     # 6. manifold learning
     print('Dimensionality reduction ...')
-    map_emb = carat.clustering.manifold_learning(map_acce)
+    map_emb = clustering.manifold_learning(map_acce)
 
     # 7. plot everything
     plt.figure()
 
     ax1 = plt.subplot(211)
     # plot feature map
-    carat.display.map_show(map_acce, ax=ax1, n_tatums=n_tatums)
+    display.map_show(map_acce, ax=ax1, n_tatums=n_tatums)
 
     ax2 = plt.subplot(212)
     # plot feature map with clusters in colors
-    carat.display.map_show(map_acce, ax=ax2, n_tatums=n_tatums, clusters=cluster_labs)
+    display.map_show(map_acce, ax=ax2, n_tatums=n_tatums, clusters=cluster_labs)
 
     fig = plt.figure()
     ax3 = fig.add_subplot(111, projection='3d')
     # plot low-dimensional embedding of feature data
-    carat.display.embedding_plot(map_emb, ax=ax3, clusters=cluster_labs)
+    display.embedding_plot(map_emb, ax=ax3, clusters=cluster_labs)
 
     fig = plt.figure()
-    carat.display.centroids_plot(centroids, n_tatums=n_tatums)
+    display.centroids_plot(centroids, n_tatums=n_tatums)
 
     plt.show()
 
