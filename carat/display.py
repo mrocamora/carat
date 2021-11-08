@@ -674,3 +674,39 @@ def __decorate_axis_subdivisions(axes, num_subdivs, total_height, fs=14):
     axes.spines['left'].set_visible(False)
     axes.set_ylabel(r'beats $\longrightarrow$', fontsize=fs)
 
+def tempo_curve_plot(bpms, beat_labels, ax=None, xlabel='Time (bar)', ylabel='Tempo (BPM)', **kwargs):  
+    """Display tempo curve plot
+
+    Parameters
+    ----------
+    bpms : np.ndarray
+        tempo values as beats per minute (bpm)
+    beat_labels : list
+        labels at the beats (e.g. 1.1, 1.2, etc)
+    ax : matplotlib.axes.Axes or None
+        Axes to plot on instead of the default `plt.gca()`.
+    kwargs
+        Additional keyword arguments to `matplotlib.`
+
+    Returns
+    -------
+    axes
+        The axis handle for the figure.
+    """    
+
+    # check axes and create it if needed
+    axes = __check_axes(ax)
+
+    # plot tempo values
+    axes.plot(bpms)
+
+    xlabs = [x.replace('.1', '') if '.1' in x else ' ' for x in beat_labels]
+    ax.xaxis.set_ticks(range(bpms.shape[0]+1))
+    ax.set_xticklabels(xlabs)
+
+    axes.legend(loc='upper right')
+    axes.xlabel(xlabel)
+    axes.ylabel(ylabel)
+    axes.tight_layout()
+
+    return axes
