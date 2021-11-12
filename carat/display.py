@@ -698,15 +698,14 @@ def tempo_curve_plot(bpms, beat_labels, ax=None, xlabel='Time (bar)', ylabel='Te
     axes = __check_axes(ax)
 
     # plot tempo values
-    axes.plot(bpms)
+    axes.plot(bpms, **kwargs)
 
     xlabs = [x.replace('.1', '') if '.1' in x else ' ' for x in beat_labels]
-    ax.xaxis.set_ticks(range(bpms.shape[0]+1))
-    ax.set_xticklabels(xlabs)
+    axes.set_xticks(range(bpms.shape[0]+1))
+    axes.set_xticklabels(xlabs)
 
     axes.legend(loc='upper right')
-    axes.xlabel(xlabel)
-    axes.ylabel(ylabel)
-    axes.tight_layout()
+    axes.set_xlabel(xlabel)
+    axes.set_ylabel(ylabel)
 
     return axes
