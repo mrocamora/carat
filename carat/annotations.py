@@ -99,7 +99,8 @@ def load_beats(labels_file, delimiter=',', times_col=0, labels_col=1):
             beat_labels = []
         else:
             fi.seek(0)
-            beat_labels = [row[labels_col] for row in reader]
+            beat_labels = [row[labels_col] for row in reader if any(col for col in row)]
+            # beat_labels = [row[labels_col] for row in reader]
 
     return beat_times, beat_labels
 
@@ -253,7 +254,7 @@ def load_onsets(labels_file, delimiter=',', times_col=0, labels_col=1):
             onset_labels = []
         else:
             fi.seek(0)
-            onset_labels = [row[labels_col] for row in reader]
+            onset_labels = [row[labels_col] for row in reader if any(col for col in row)]
 
     return onset_times, onset_labels
 
