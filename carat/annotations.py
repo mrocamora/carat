@@ -100,7 +100,6 @@ def load_beats(labels_file, delimiter=',', times_col=0, labels_col=1):
         else:
             fi.seek(0)
             beat_labels = [row[labels_col] for row in reader if any(col for col in row)]
-            # beat_labels = [row[labels_col] for row in reader]
 
     return beat_times, beat_labels
 
