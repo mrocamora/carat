@@ -40,6 +40,7 @@ import warnings
 import numpy as np
 import scipy.signal
 import scipy.fftpack as fft
+from scipy.stats import pearsonr
 import pkg_resources
 #import scipy.signal
 #import exceptions
@@ -607,3 +608,47 @@ def example_onsets_file(num_file=None):
         EXAMPLE_ONSETS = EXAMPLE_ONSETS1
 
     return pkg_resources.resource_filename(__name__, EXAMPLE_ONSETS)
+
+
+def compute_correlation_matrix(data1, data2, n=4):
+    """Compute correlation matrix for two data sequences.
+       The sequences' values are grouped in chunks of size n.
+
+    Parameters
+    ----------
+    data1 : np.ndarray
+        data sequence 1
+    data2 : np.ndarray
+        data sequence 2
+    n : int
+        grouping factor
+
+    Returns
+    -------
+    CM : np.ndarray
+        correlation matrix
+    """
+
+    # total data length
+    N = data1.shape[0]
+    # matrix elements
+    M = int(np.floor(N / n))
+
+    # correlation matrix
+    CM = np.zeros((M,M))
+
+    for k in range(M):
+        # segment length
+        sl = (k+1) * n
+        # segment hop
+        sh = n
+        for s in range(M-k):
+            # segment indexes
+            ind_ini = s * sh 
+            ind_end = ind_ini + sl
+            # calculate Pearson's correlation
+            corr, _ = pearsonr(data1[ind_ini:ind_end], data2[ind_ini:ind_end])
+            # save correlation value
+            CM[k, s] = corr
+
+    return CM
