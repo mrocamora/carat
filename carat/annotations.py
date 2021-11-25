@@ -13,13 +13,15 @@ Reading and writing annotations
     load_beats
     load_downbeats
     load_onsets
+    trim_beats
+    trim_downbeats
 
 """
 
 import csv
 import numpy as np
 
-__all__ = ['load_beats', 'load_downbeats', 'load_onsets']
+__all__ = ['load_beats', 'load_downbeats', 'load_onsets', 'trim_beats', 'trim_downbeats']
 
 def load_beats(labels_file, delimiter=',', times_col=0, labels_col=1):
     """Load annotated beats from text (csv) file.
@@ -97,7 +99,7 @@ def load_beats(labels_file, delimiter=',', times_col=0, labels_col=1):
             beat_labels = []
         else:
             fi.seek(0)
-            beat_labels = [row[labels_col] for row in reader]
+            beat_labels = [row[labels_col] for row in reader if any(col for col in row)]
 
     return beat_times, beat_labels
 
@@ -123,7 +125,7 @@ def load_downbeats(labels_file, delimiter=',', times_col=0, labels_col=1, downbe
     downbeat_times : np.ndarray
         time instants of the downbeats
     downbeat_labels : list
-        abels at the downbeats
+        labels at the downbeats
 
     Examples
     --------
@@ -251,6 +253,75 @@ def load_onsets(labels_file, delimiter=',', times_col=0, labels_col=1):
             onset_labels = []
         else:
             fi.seek(0)
-            onset_labels = [row[labels_col] for row in reader]
+            onset_labels = [row[labels_col] for row in reader if any(col for col in row)]
 
     return onset_times, onset_labels
+
+
+def trim_beats(beat_times, beat_labels, downbeat_times, ini_bar, num_bars):
+    """ Trim beats to select certain section within the recording.
+
+    Parameters
+    ----------
+    beat_times : np.ndarray
+        time instants of the beats
+    beat_labels : list
+        labels at the beats (e.g. 1.1, 1.2, etc)
+    downbeat_times : np.ndarray
+        time instants of the downbeats
+    ini_bar : int
+        initial bar to trim from
+    num_bars : int
+        number of bars to trim
+
+    Returns
+    -------
+    beat_times_trimmed : np.ndarray
+        time instants of the beats after trimming
+    beat_labels_trimmed : list
+        labels at the beats after trimming
+
+    Notes
+    -----
+    Note that this function trims a certain number of bars (from downbeat to downbeat).
+    """
+
+    ini_downbeat = downbeat_times[ini_bar-1]
+    end_downbeat = downbeat_times[ini_bar-1+num_bars-1]
+
+    inds_beats = np.nonzero(np.logical_and(beat_times >= ini_downbeat,
+                                           beat_times <= end_downbeat))
+    inds_beats = inds_beats[0]
+    beat_times_trimmed = beat_times[inds_beats]
+    beat_labels_trimmed = beat_labels[inds_beats[0]:inds_beats[-1]+1]
+
+    return beat_times_trimmed, beat_labels_trimmed
+
+
+def trim_downbeats(downbeat_times, downbeat_labels, ini_bar, num_bars):
+    """ Trim downbeats to select certain section within the recording.
+
+    Parameters
+    ----------
+    downbeat_times : np.ndarray
+        time instants of the downbeats
+    downbeat_labels : list
+        labels at the downbeats
+    ini_bar : int
+        initial bar to trim from
+    num_bars : int
+        number of bars to trim
+
+    Returns
+    -------
+    downbeat_times_trimmed : np.ndarray
+        time instants of the downbeats after trimming
+    downbeat_labels_trimmed : list
+        labels at the downbeats after trimming
+
+    """
+
+    downbeat_times_trimmed = downbeat_times[ini_bar-1:ini_bar-1+num_bars]
+    downbeat_labels_trimmed = downbeat_labels[ini_bar-1:ini_bar-1+num_bars]
+
+    return downbeat_times_trimmed, downbeat_labels_trimmed

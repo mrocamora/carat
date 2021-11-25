@@ -15,11 +15,13 @@ Display
     plot_centroid
 """
 
+import copy
 import numpy as np
 from pylab import get_cmap
 from matplotlib import colors
 import matplotlib.cm as cm
 from matplotlib.axes import Axes
+import matplotlib.ticker as mticker
 from matplotlib.ticker import NullFormatter
 from librosa.display import TimeFormatter
 from . import util
@@ -333,7 +335,7 @@ def map_show(data, x_coords=None, y_coords=None, ax=None,
         # check clusters and return number of clusters
         n_clusters = __check_clusters(clusters, bars)
         # matrix to plot clusters' map
-        mapc = __get_cluster_matrix(clusters, y_coords.size)
+        mapc = __get_cluster_matrix(clusters, y_coords.size-1)
         # get colormap used to plot clusters
         cmap, norm = __get_colormap_map(n_clusters)
         # plot clusters in colors
@@ -674,3 +676,123 @@ def __decorate_axis_subdivisions(axes, num_subdivs, total_height, fs=14):
     axes.spines['left'].set_visible(False)
     axes.set_ylabel(r'beats $\longrightarrow$', fontsize=fs)
 
+def tempo_curve_plot(bpms, beat_labels, ax=None, xlabel='Time (bar)', ylabel='Tempo (BPM)', **kwargs):  
+    """Display tempo curve plot
+
+    Parameters
+    ----------
+    bpms : np.ndarray
+        tempo values as beats per minute (bpm)
+    beat_labels : list
+        labels at the beats (e.g. 1.1, 1.2, etc)
+    ax : matplotlib.axes.Axes or None
+        Axes to plot on instead of the default `plt.gca()`.
+    kwargs
+        Additional keyword arguments to `matplotlib.`
+
+    Returns
+    -------
+    axes
+        The axis handle for the figure.
+    """    
+
+    # check axes and create it if needed
+    axes = __check_axes(ax)
+
+    # plot tempo values
+    axes.plot(bpms, **kwargs)
+
+    xlabs = [x.replace('.1', '') if '.1' in x else ' ' for x in beat_labels]
+    axes.set_xticks(range(bpms.shape[0]+1))
+    axes.set_xticklabels(xlabs)
+
+    axes.legend(loc='upper right')
+    axes.set_xlabel(xlabel)
+    axes.set_ylabel(ylabel)
+
+    return axes
+
+
+def scape_plot(SP, Fs=1, ax=None, thr=0.9, mkr='X', xlabel='', ylabel='', **kwargs): 
+    """Display scape plot
+
+    Parameters
+    ----------
+    SP : np.ndarray
+        scape plot data
+    Fs : int
+        sampling rate
+    thr : float
+        threshold used for text annotations
+    mkr : string
+        marker used for text annotations
+    ax : matplotlib.axes.Axes or None
+        Axes to plot on instead of the default `plt.gca()`.
+    kwargs
+        Additional keyword arguments to `matplotlib.`
+
+    Returns
+    -------
+    axes
+        The axis handle for the figure.
+    axim
+        The axis image for the figure.
+
+    Notes
+    -----
+    This code is based on the Fundamentals of Music Processing notebooks [1].
+
+    References
+    ----------
+    .. [1] Meinard Müller and Frank Zalkow
+           libfmp: A Python Package for Fundamentals of Music Processing. 
+           Journal of Open Source Software (JOSS), 6(63), 2021.
+    """    
+
+    # check axes and create it if needed
+    axes = __check_axes(ax)
+
+    N = SP.shape[0]
+    SP_vis = np.zeros((N,N))
+    
+    # create scape plot data for display
+    for length_minus_one in range(N):
+        for start in range(N-length_minus_one):
+            center = start + length_minus_one//2
+            SP_vis[length_minus_one,center] = SP[length_minus_one,start]
+            
+    extent = np.array([-0.5, (N-1)+0.5, -0.5, (N-1)+0.5])/Fs  
+    cmap_custom = copy.copy(cm.get_cmap("Spectral_r"))
+    cmap_custom.set_bad('white')
+    axim = axes.imshow(np.ma.masked_values(SP_vis, 0), cmap=cmap_custom,
+                       aspect='auto', origin='lower', extent=extent, vmin=-1, vmax=1, **kwargs) 
+    
+    # loop over data dimensions and create text annotations
+    for i in range(N):
+        for j in range(N):
+            if SP_vis[i, j] >= thr:
+                 text = axes.text(j, i, mkr,
+                                  ha="center", va="center", color="w")
+    # plot borders
+    x = np.asarray(range(N))
+    x_half_lower = x/2
+    x_half_upper = x/2 + N/2 - 1/2 
+    axes.plot(x_half_lower/Fs, x/Fs+3/4, '-', linewidth=3, color='black')
+    axes.plot(x_half_upper/Fs, np.flip(x, axis=0)/Fs, '-', linewidth=3, color='black')    
+    axes.plot(x/Fs, np.zeros(N)/Fs, '-', linewidth=3, color='black')
+    axes.set_xlim([0,(N-1)/Fs])
+    axes.set_ylim([0,(N-1)/Fs])
+
+    ticks = axes.get_xticks().tolist()
+    axes.xaxis.set_major_locator(mticker.FixedLocator(ticks))
+    new_ticks = [int(tick)+1 for tick in ticks]
+    axes.set_xticklabels(new_ticks)
+    ticks = axes.get_yticks().tolist()
+    axes.yaxis.set_major_locator(mticker.FixedLocator(ticks))
+    new_ticks = [int(tick)+1 for tick in ticks]
+    axes.set_yticklabels(new_ticks)
+
+    axes.set_xlabel(xlabel)
+    axes.set_ylabel(ylabel)
+
+    return axes, axim
