@@ -335,7 +335,7 @@ def map_show(data, x_coords=None, y_coords=None, ax=None,
         # check clusters and return number of clusters
         n_clusters = __check_clusters(clusters, bars)
         # matrix to plot clusters' map
-        mapc = __get_cluster_matrix(clusters, y_coords.size)
+        mapc = __get_cluster_matrix(clusters, y_coords.size-1)
         # get colormap used to plot clusters
         cmap, norm = __get_colormap_map(n_clusters)
         # plot clusters in colors
