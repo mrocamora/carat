@@ -42,10 +42,32 @@ import scipy.signal
 import scipy.fftpack as fft
 from scipy.stats import pearsonr
 import pkg_resources
-#import scipy.signal
-#import exceptions
 from .exceptions import ParameterError
 
+import os
+import json
+from pathlib import Path
+from pkg_resources import resource_filename
+import pooch
+
+
+# Instantiate the pooch
+__data_path = os.environ.get("CARAT_DATA_DIR", pooch.os_cache("carat"))
+__GOODBOY = pooch.create(
+    __data_path, base_url="https://iie.fing.edu.uy/~rocamora/downloads/carat_data/", registry=None
+)
+
+__GOODBOY.load_registry(
+    pkg_resources.resource_stream(__name__, str(Path("example_data") / "registry.txt"))
+)
+
+with open(
+    resource_filename(__name__, str(Path("example_data") / "index.json")), "r"
+) as fdesc:
+    __TRACKMAP = json.load(fdesc)
+
+
+# Should not be needed anymore
 EXAMPLE_AUDIO1 = 'example_data/candombe/csic.1995_ansina1_01.wav'
 EXAMPLE_AUDIO2 = 'example_data/candombe/Take_211_chico.wav'
 EXAMPLE_AUDIO3 = 'example_data/samba/[0216] S2-TB2-03-SE.wav'
@@ -508,6 +530,85 @@ def getValidKeywords(kw, func):
     return valid_kw, invalid_kw
 
 
+def example(key):
+    #  DE LIBROSA
+
+    """Retrieve the example recording identified by 'key'.
+
+    The first time an example is requested, it will be downloaded from
+    the remote repository over HTTPS.
+    All subsequent requests will use a locally cached copy of the recording.
+
+    For a list of examples (and their keys), see `librosa.util.list_examples`.
+
+    By default, local files will be cached in the directory given by
+    `pooch.os_cache('librosa')`.  You can override this by setting
+    an environment variable ``LIBROSA_DATA_DIR`` prior to importing librosa:
+
+    >>> import os
+    >>> os.environ['LIBROSA_DATA_DIR'] = '/path/to/store/data'
+    >>> import librosa
+
+
+    Parameters
+    ----------
+    key : str
+        The identifier for the track to load
+
+    Returns
+    -------
+    path : str
+        The path to the requested example file
+
+    Examples
+    --------
+    Load "Hungarian Dance #5" by Johannes Brahms
+
+    >>> y, sr = librosa.load(librosa.example('brahms'))
+
+    Load "Vibe Ace" by Kevin MacLeod (the example previously packaged with librosa)
+    in high-quality mode
+
+    >>> y, sr = librosa.load(librosa.example('vibeace', hq=True))
+
+    See Also
+    --------
+    librosa.util.list_examples
+    pooch.os_cache
+    """
+
+    if key not in __TRACKMAP:
+        raise ParameterError("Unknown example key: {}".format(key))
+
+    return __GOODBOY.fetch(__TRACKMAP[key]["path"])
+
+
+ex = example
+"""Alias for example"""
+
+
+def list_examples():
+    #  DE LIBROSA
+    """List the available audio recordings included with librosa.
+
+    Each recording is given a unique identifier (e.g., "brahms" or "nutcracker"),
+    listed in the first column of the output.
+
+    A brief description is provided in the second column.
+
+    See Also
+    --------
+    util.example
+    util.example_info
+    """
+    print("AVAILABLE EXAMPLES")
+    print("-" * 68)
+    for key in sorted(__TRACKMAP.keys()):
+        print("{:10}\t{}".format(key, __TRACKMAP[key]["desc"]))
+
+
+
+# Should be deprecated
 def example_audio_file(num_file=None):
     '''Get the path to an included audio example file.
 
@@ -546,6 +647,7 @@ def example_audio_file(num_file=None):
     return pkg_resources.resource_filename(__name__, EXAMPLE_AUDIO)
 
 
+# Should be deprecated
 def example_beats_file(num_file=None):
     '''Get the path to an included example file of beats annotations.
 
@@ -579,6 +681,7 @@ def example_beats_file(num_file=None):
     return pkg_resources.resource_filename(__name__, EXAMPLE_BEATS)
 
 
+# Should be deprecated
 def example_onsets_file(num_file=None):
     '''Get the path to an included example file of onsets annotations.
 
