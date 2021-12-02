@@ -67,20 +67,6 @@ with open(
     __TRACKMAP = json.load(fdesc)
 
 
-# Should not be needed anymore
-EXAMPLE_AUDIO1 = 'example_data/candombe/csic.1995_ansina1_01.wav'
-EXAMPLE_AUDIO2 = 'example_data/candombe/Take_211_chico.wav'
-EXAMPLE_AUDIO3 = 'example_data/samba/[0216] S2-TB2-03-SE.wav'
-
-EXAMPLE_BEATS1 = 'example_data/candombe/csic.1995_ansina1_01.csv'
-EXAMPLE_BEATS2 = 'example_data/candombe/Take_211_chico_beats.csv'
-EXAMPLE_BEATS3 = 'example_data/samba/[0216] S2-TB2-03-SE.beats.txt'
-
-EXAMPLE_ONSETS1 = ''
-EXAMPLE_ONSETS2 = 'example_data/candombe/Take_211_chico_onsets.csv'
-EXAMPLE_ONSETS3 = 'example_data/samba/[0216] S2-TB2-03-SE.onsets.txt'
-
-
 __all__ = ['find_nearest', 'STFT', 'hz2mel', 'mel2hz', 'deltas']
 
 
@@ -531,7 +517,6 @@ def getValidKeywords(kw, func):
 
 
 def example(key):
-    #  DE LIBROSA
 
     """Retrieve the example recording identified by 'key'.
 
@@ -539,21 +524,21 @@ def example(key):
     the remote repository over HTTPS.
     All subsequent requests will use a locally cached copy of the recording.
 
-    For a list of examples (and their keys), see `librosa.util.list_examples`.
+    For a list of examples (and their keys), see `carat.util.list_examples`.
 
     By default, local files will be cached in the directory given by
-    `pooch.os_cache('librosa')`.  You can override this by setting
-    an environment variable ``LIBROSA_DATA_DIR`` prior to importing librosa:
+    `pooch.os_cache('carat')`.  You can override this by setting
+    an environment variable ``CARAT_DATA_DIR`` prior to importing carat:
 
     >>> import os
-    >>> os.environ['LIBROSA_DATA_DIR'] = '/path/to/store/data'
-    >>> import librosa
+    >>> os.environ['CARAT_DATA_DIR'] = '/path/to/store/data'
+    >>> import carat
 
 
     Parameters
     ----------
     key : str
-        The identifier for the track to load
+        The identifier for the file to load
 
     Returns
     -------
@@ -562,19 +547,18 @@ def example(key):
 
     Examples
     --------
-    Load "Hungarian Dance #5" by Johannes Brahms
+    >>> # Load 10 seconds of the waveform from an example track of a chico drum
+    >>> y, sr = carat.audio.load(carat.util.example("chico_audio"), duration=10.0))
 
-    >>> y, sr = librosa.load(librosa.example('brahms'))
+    >>> # Load the waveform from the example track of an Ansina recording
+    >>> y, sr = carat.audio.load(carat.util.example_audio_file("ansina_audio"))
 
-    Load "Vibe Ace" by Kevin MacLeod (the example previously packaged with librosa)
-    in high-quality mode
+    >>> # Load beats and downbeats from the example file of a chico drum
+    >>> beats, b_labs = carat.annotations.load_beats(carat.util.example_beats_file("chico_beats"))
+    >>> downbeats, d_labs = carat.annotations.load_downbeats(carat.util.example_beats_file("chico_beats"))
 
-    >>> y, sr = librosa.load(librosa.example('vibeace', hq=True))
-
-    See Also
-    --------
-    librosa.util.list_examples
-    pooch.os_cache
+    >>> # Load onsets from the example file number of a chico drum
+    >>> onsets, onset_labs = carat.annotations.load_onsets(carat.util.example_onsets_file("chico_onsets"))
     """
 
     if key not in __TRACKMAP:
@@ -588,129 +572,19 @@ ex = example
 
 
 def list_examples():
-    #  DE LIBROSA
-    """List the available audio recordings included with librosa.
+    """List the available example files included with Carat.
 
-    Each recording is given a unique identifier (e.g., "brahms" or "nutcracker"),
+    Each file (audio file, beat annotations, onset annotations) is given 
+    a unique identifier (e.g., "chico_audio" or "chico_onsets"),
     listed in the first column of the output.
 
     A brief description is provided in the second column.
 
-    See Also
-    --------
-    util.example
-    util.example_info
     """
-    print("AVAILABLE EXAMPLES")
+    print("AVAILABLE EXAMPLE FILES")
     print("-" * 68)
     for key in sorted(__TRACKMAP.keys()):
         print("{:10}\t{}".format(key, __TRACKMAP[key]["desc"]))
-
-
-
-# Should be deprecated
-def example_audio_file(num_file=None):
-    '''Get the path to an included audio example file.
-
-    Parameters
-    ----------
-    num_file : int
-        Number to select among the example files available.
-
-    Returns
-    -------
-    filename : str
-        Path to the audio example file included with `carat`.
-
-    Examples
-    --------
-    >>> # Load the waveform from the default example track
-    >>> y, sr = carat.audio.load(carat.util.example_audio_file())
-
-    >>> # Load 10 seconds of the waveform from the example track number 1
-    >>> y, sr = carat.audio.load(carat.util.example_audio_file(num_file=1), duration=10.0))
-
-    >>> # Load the waveform from the example track number 2
-    >>> y, sr = carat.audio.load(carat.util.example_audio_file(num_file=2))
-
-    '''
-
-    if num_file == 1:
-        EXAMPLE_AUDIO = EXAMPLE_AUDIO1
-    elif num_file == 2:
-        EXAMPLE_AUDIO = EXAMPLE_AUDIO2
-    elif num_file == 3:
-        EXAMPLE_AUDIO = EXAMPLE_AUDIO3
-    else:
-        EXAMPLE_AUDIO = EXAMPLE_AUDIO1
-
-    return pkg_resources.resource_filename(__name__, EXAMPLE_AUDIO)
-
-
-# Should be deprecated
-def example_beats_file(num_file=None):
-    '''Get the path to an included example file of beats annotations.
-
-    Parameters
-    ----------
-    num_file : int
-        Number to select among the example files available.
-
-    Returns
-    -------
-    filename : str
-        Path to the beats annotations example file included with `carat`.
-
-    Examples
-    --------
-    >>> # Load beats and downbeats from the example audio file number 1
-    >>> beats, b_labs = carat.annotations.load_beats(carat.util.example_beats_file(num_file=1))
-    >>> downbeats, d_labs = carat.annotations.load_downbeats(carat.util.example_beats_file(num_file=1))
-    
-    '''
-
-    if num_file == 1:
-        EXAMPLE_BEATS = EXAMPLE_BEATS1
-    elif num_file == 2:
-        EXAMPLE_BEATS = EXAMPLE_BEATS2
-    elif num_file == 3:
-        EXAMPLE_BEATS = EXAMPLE_BEATS3
-    else:
-        EXAMPLE_BEATS = EXAMPLE_BEATS1
-
-    return pkg_resources.resource_filename(__name__, EXAMPLE_BEATS)
-
-
-# Should be deprecated
-def example_onsets_file(num_file=None):
-    '''Get the path to an included example file of onsets annotations.
-
-    Examples
-    --------
-    >>> # Load onsets from the example file number 1
-    >>> onsets, onset_labs = carat.annotations.load_onsets(carat.util.example_onsets_file(num_file=1))
-
-    Parameters
-    ----------
-    num_file : int
-        Number to select among the example files available.
-
-    Returns
-    -------
-    filename : str
-        Path to the beats annotations example file included with `carat`.
-    '''
-
-    if num_file == 1:
-        EXAMPLE_ONSETS = EXAMPLE_ONSETS1
-    elif num_file == 2:
-        EXAMPLE_ONSETS = EXAMPLE_ONSETS2
-    elif num_file == 3:
-        EXAMPLE_ONSETS = EXAMPLE_ONSETS3
-    else:
-        EXAMPLE_ONSETS = EXAMPLE_ONSETS1
-
-    return pkg_resources.resource_filename(__name__, EXAMPLE_ONSETS)
 
 
 def compute_correlation_matrix(data1, data2, n=4):
