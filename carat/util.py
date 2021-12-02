@@ -54,7 +54,7 @@ import pooch
 # Instantiate the pooch
 __data_path = os.environ.get("CARAT_DATA_DIR", pooch.os_cache("carat"))
 __GOODBOY = pooch.create(
-    __data_path, base_url="https://raw.githubusercontent.com/mrocamora/carat/pooch/examples/data/", registry=None
+    __data_path, base_url="https://raw.githubusercontent.com/mrocamora/carat/master/examples/data/", registry=None
 )
 
 __GOODBOY.load_registry(
