@@ -518,7 +518,7 @@ def getValidKeywords(kw, func):
 
 def example(key):
 
-    """Retrieve the example recording identified by 'key'.
+    """Retrieve the example file identified by 'key'.
 
     The first time an example is requested, it will be downloaded from
     the remote repository over HTTPS.
@@ -550,14 +550,14 @@ def example(key):
     >>> # Load 10 seconds of the waveform from an example track of a chico drum
     >>> y, sr = carat.audio.load(carat.util.example("chico_audio"), duration=10.0))
 
-    >>> # Load the waveform from the example track of an Ansina recording
+    >>> # Load the waveform from the example track of the Ansina candombe recording
     >>> y, sr = carat.audio.load(carat.util.example_audio_file("ansina_audio"))
 
     >>> # Load beats and downbeats from the example file of a chico drum
     >>> beats, b_labs = carat.annotations.load_beats(carat.util.example_beats_file("chico_beats"))
     >>> downbeats, d_labs = carat.annotations.load_downbeats(carat.util.example_beats_file("chico_beats"))
 
-    >>> # Load onsets from the example file number of a chico drum
+    >>> # Load onsets from the example file of a chico drum
     >>> onsets, onset_labs = carat.annotations.load_onsets(carat.util.example_onsets_file("chico_onsets"))
     """
 
