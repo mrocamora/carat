@@ -1,0 +1,34 @@
+{
+    "chico_audio": {
+        "path": "candombe/Take_211_chico.wav",
+        "desc": "candombe/Take_211_chico.wav"
+    },
+    "chico_beats": {
+        "path": "candombe/Take_211_chico_beats.csv",
+        "desc": "candombe/Take_211_chico_beats.csv"
+    },
+    "chico_onsets": {
+        "path": "candombe/Take_211_chico_onsets.csv",
+        "desc": "candombe/Take_211_chico_onsets.csv"
+    },
+    "ansina_audio": {
+        "path": "candombe/csic.1995_ansina1_01.wav",
+        "desc": "candombe/csic.1995_ansina1_01.wav"
+    },
+    "ansina_beats": {
+        "path": "candombe/csic.1995_ansina1_01.csv",
+        "desc": "candombe/csic.1995_ansina1_01.csv"
+    },
+    "tamborim_audio": {
+        "path": "samba/%5b0216%5d%20S2-TB2-03-SE.wav",
+        "desc": "samba/[0216] S2-TB2-03-SE.wav"
+    },
+    "tamborim_beats": {
+        "path": "samba/%5b0216%5d%20S2-TB2-03-SE.beats.txt",
+        "desc": "samba/[0216] S2-TB2-03-SE.beats.txt"
+    },
+    "tamborim_onsets": {
+        "path": "samba/%5b0216%5d%20S2-TB2-03-SE.onsets.txt",
+        "desc": "samba/[0216] S2-TB2-03-SE.onsets.txt"
+    }
+}
