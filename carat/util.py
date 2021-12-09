@@ -551,14 +551,14 @@ def example(key):
     >>> y, sr = carat.audio.load(carat.util.example("chico_audio"), duration=10.0))
 
     >>> # Load the waveform from the example track of the Ansina candombe recording
-    >>> y, sr = carat.audio.load(carat.util.example_audio_file("ansina_audio"))
+    >>> y, sr = carat.audio.load(carat.util.example("ansina_audio"))
 
     >>> # Load beats and downbeats from the example file of a chico drum
-    >>> beats, b_labs = carat.annotations.load_beats(carat.util.example_beats_file("chico_beats"))
-    >>> downbeats, d_labs = carat.annotations.load_downbeats(carat.util.example_beats_file("chico_beats"))
+    >>> beats, b_labs = carat.annotations.load_beats(carat.util.example("chico_beats"))
+    >>> downbeats, d_labs = carat.annotations.load_downbeats(carat.util.example("chico_beats"))
 
     >>> # Load onsets from the example file of a chico drum
-    >>> onsets, onset_labs = carat.annotations.load_onsets(carat.util.example_onsets_file("chico_onsets"))
+    >>> onsets, onset_labs = carat.annotations.load_onsets(carat.util.example("chico_onsets"))
     """
 
     if key not in __TRACKMAP:
