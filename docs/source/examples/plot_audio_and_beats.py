@@ -25,7 +25,7 @@ from carat import util, audio, annotations, display
 # **Note 1:** By default, `carat` will resample the signal to 22050Hz, but this can disabled
 # by saying `sr=None` (`carat` uses librosa for loading audio files, so it inherits
 # all its functionality and behaviour).
-audio_path = util.example_audio_file(num_file=1)
+audio_path = util.example("ansina_audio")
 
 y, sr = audio.load(audio_path, duration=10.0)
 
@@ -33,7 +33,7 @@ y, sr = audio.load(audio_path, duration=10.0)
 # Next, we'll load the annotations provided for the example audio file.
 # We get the path to the annotations file corresponding to example number 1,
 # and then we load beats and downbeats, along with their labels.
-annotations_path = util.example_beats_file(num_file=1)
+annotations_path = util.example("ansina_beats")
 
 beats, beat_labs = annotations.load_beats(annotations_path)
 downbeats, downbeat_labs = annotations.load_downbeats(annotations_path)
