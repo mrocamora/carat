@@ -29,8 +29,8 @@ Miscellaneous
 .. autosummary::
     :toctree: generated/
 
-    example_audio_file
-    example_beats_file
+    example
+    list_examples
     find_nearest
     deltas
 """

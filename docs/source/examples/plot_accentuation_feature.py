@@ -27,7 +27,7 @@ from carat import util, audio, display, annotations, features
 #
 # First, we'll load one of the audio files included in `carat`.
 # We get the path to the audio file example number  1, and load 10 seconds of the file.
-audio_path = util.example_audio_file(num_file=1)
+audio_path = util.example("ansina_audio")
 
 y, sr = audio.load(audio_path, duration=10.0)
 
@@ -35,7 +35,7 @@ y, sr = audio.load(audio_path, duration=10.0)
 # Next, we'll load the annotations provided for the example audio file.
 # We get the path to the annotations file corresponding to example number 1,
 # and then we load beats and downbeats, along with their labels.
-annotations_path = util.example_beats_file(num_file=1)
+annotations_path = util.example("ansina_beats")
 
 beats, beat_labs = annotations.load_beats(annotations_path)
 downbeats, downbeat_labs = annotations.load_downbeats(annotations_path)

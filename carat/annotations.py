@@ -50,7 +50,7 @@ def load_beats(labels_file, delimiter=',', times_col=0, labels_col=1):
     Load an included example file from the candombe dataset.
     http://www.eumus.edu.uy/candombe/datasets/ISMIR2015/
 
-    >>> annotations_file = carat.util.example_beats_file(num_file=1)
+    >>> annotations_file = carat.util.example("ansina_beats")
     >>> beats, beat_labs = annotations.load_beats(annotations_file)
     >>> beats[0]
     0.548571428
@@ -60,7 +60,7 @@ def load_beats(labels_file, delimiter=',', times_col=0, labels_col=1):
     Load an included example file from the samba dataset.
     http://www.smt.ufrj.br/~starel/datasets/brid.html
 
-    >>> annotations_file = carat.util.example_beats_file(num_file=3)
+    >>> annotations_file = carat.util.example("tamborim_beats")
     >>> beats, beat_labs = annotations.load_beats(annotations_file, delimiter=' ')
     >>> beats
     array([ 2.088,  2.559,  3.012,   3.48,  3.933,   4.41,  4.867,   5.32,
@@ -133,7 +133,7 @@ def load_downbeats(labels_file, delimiter=',', times_col=0, labels_col=1, downbe
     Load an included example file from the candombe dataset.
     http://www.eumus.edu.uy/candombe/datasets/ISMIR2015/
 
-    >>> annotations_file = carat.util.example_beats_file(num_file=1)
+    >>> annotations_file = carat.util.example("ansina_beats")
     >>> downbeats, downbeat_labs = carat.annotations.load_downbeats(annotations_file)
     >>> downbeats[:3]
     array([0.54857143, 2.33265306, 4.11530612])
@@ -144,7 +144,7 @@ def load_downbeats(labels_file, delimiter=',', times_col=0, labels_col=1, downbe
     Load an included example file from the samba dataset.
     http://www.smt.ufrj.br/~starel/datasets/brid.html
 
-    >>> annotations_file = carat.util.example_beats_file(num_file=3)
+    >>> annotations_file = carat.util.example("tamborim_beats")
     >>> downbeats, downbeat_labs = annotations.load_downbeats(annotations_file,
                                                               delimiter=' ', downbeat_label='1')
     >>> downbeats
@@ -214,7 +214,7 @@ def load_onsets(labels_file, delimiter=',', times_col=0, labels_col=1):
 
     Load an included example file from the candombe dataset.
 
-    >>> onsets_file = carat.util.example_onsets_file(num_file=2)
+    >>> onsets_file = carat.util.example("chico_onsets")
     >>> onsets, onset_labs = carat.annotations.load_beats(onsets_file)
     >>> onsets[0]
     12.969002267
@@ -224,7 +224,7 @@ def load_onsets(labels_file, delimiter=',', times_col=0, labels_col=1):
     Load an included example file from the samba dataset.
     http://www.smt.ufrj.br/~starel/datasets/brid.html
 
-    >>> onsets_file = carat.util.example_onsets_file(num_file=3)
+    >>> onsets_file = carat.util.example("tamborim_onsets")
     >>> onsets, onset_labs = carat.annotations.load_beats(onsets_file, delimiter='\t')
     >>> onsets[0]
     1.93
