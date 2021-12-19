@@ -33,7 +33,7 @@ __all__ = ['wave_plot', 'map_show', 'feature_plot', 'embedding_plot',
 
 
 def wave_plot(y, sr=22050, x_axis='time', beats=None, beat_labs=None,
-              ax=None, **kwargs):
+              onsets=None, ax=None, **kwargs):
     '''Plot an audio waveform and beat labels (optinal).
 
     Parameters
@@ -73,8 +73,13 @@ def wave_plot(y, sr=22050, x_axis='time', beats=None, beat_labs=None,
     # plot waveform
     out = axes.plot(time, y, **kwargs)
 
+    # plot beats
     if beats is not None:
         __plot_beats(beats, max_time, axes, beat_labs=beat_labs, **kwargs)
+
+    # plot onsets
+    if onsets is not None:
+        __plot_onsets(onsets, max_time, axes, **kwargs)
 
     # format x axis
     if x_axis == 'time':
@@ -89,7 +94,7 @@ def wave_plot(y, sr=22050, x_axis='time', beats=None, beat_labs=None,
 
 
 def feature_plot(feature, time, x_axis='time', beats=None, beat_labs=None,
-                 ax=None, **kwargs):
+                 onsets=None, ax=None, **kwargs):
     '''Plot an audio waveform and beat labels (optinal).
 
 
@@ -128,8 +133,13 @@ def feature_plot(feature, time, x_axis='time', beats=None, beat_labs=None,
     # plot waveform
     out = axes.plot(time, feature, **kwargs)
 
+    # plot beats
     if beats is not None:
         __plot_beats(beats, max_time, axes, beat_labs=beat_labs, **kwargs)
+
+    # plot onsets
+    if onsets is not None:
+        __plot_onsets(onsets, max_time, axes, **kwargs)
 
     # format x axis
     if x_axis == 'time':
@@ -229,6 +239,8 @@ def __plot_beats(beats, max_time, ax, beat_labs=None, **kwargs):
     ----------
     beats : np.ndarray
         audio time series
+    max_time : float
+        maximum time value
     beat_labs : list
         beat labels
     x_axis : str {'time', 'off', 'none'} or None
@@ -271,6 +283,42 @@ def __plot_beats(beats, max_time, ax, beat_labs=None, **kwargs):
         ax2.set_xticklabels([])
 
     return ax2
+
+
+def __plot_onsets(onsets, max_time, ax, **kwargs):
+    '''Plot beat labels.
+
+    Parameters
+    ----------
+    onsets : np.ndarray
+        audio time series
+    max_time : float
+        maximum time value
+    ax : matplotlib.axes.Axes or None
+        Axes to plot on instead of the default `plt.gca()`.
+    kwargs
+        Additional keyword arguments to `matplotlib.`
+
+    Returns
+    -------
+
+    '''
+
+    kwargs['color'] = 'crimson'
+    kwargs.setdefault('linestyle', '-')
+    kwargs['alpha'] = 0.3
+    kwargs.setdefault('linewidth', 2)
+
+    # replace nan values to 0
+    onsets = np.nan_to_num(onsets)
+
+    # consider onsets bellow max_time
+    ind_ons = util.find_nearest(onsets, max_time)
+    new_ons = onsets[:ind_ons]
+
+    # plot beat annotations
+    for onset in new_ons:
+        ax.axvline(x=onset, **kwargs)
 
 
 def map_show(data, x_coords=None, y_coords=None, ax=None,
