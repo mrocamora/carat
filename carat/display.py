@@ -34,7 +34,7 @@ __all__ = ['wave_plot', 'map_show', 'feature_plot', 'embedding_plot',
 
 def wave_plot(y, sr=22050, x_axis='time', beats=None, beat_labs=None,
               onsets=None, ax=None, **kwargs):
-    '''Plot an audio waveform and beat labels (optinal).
+    '''Plot an audio waveform (as well as beats and onsets, optionally).
 
     Parameters
     ----------
@@ -44,6 +44,12 @@ def wave_plot(y, sr=22050, x_axis='time', beats=None, beat_labs=None,
         sampling rate of `y`
     x_axis : str {'time', 'off', 'none'} or None
         If 'time', the x-axis is given time tick-marks.
+    beats : np.ndarray
+        location of beats as time values
+    beat_labs : list
+        labels at the beats (e.g. 1.1, 1.2, etc)
+    onsets : np.ndarray
+        location of onsets as time values
     ax : matplotlib.axes.Axes or None
         Axes to plot on instead of the default `plt.gca()`.
     kwargs
@@ -95,7 +101,7 @@ def wave_plot(y, sr=22050, x_axis='time', beats=None, beat_labs=None,
 
 def feature_plot(feature, time, x_axis='time', beats=None, beat_labs=None,
                  onsets=None, ax=None, **kwargs):
-    '''Plot an audio waveform and beat labels (optinal).
+    '''Plot a feature function (as well as beats and onsets, optionally).
 
 
     Parameters
@@ -106,6 +112,12 @@ def feature_plot(feature, time, x_axis='time', beats=None, beat_labs=None,
         time instant of the feature values
     x_axis : str {'time', 'off', 'none'} or None
         If 'time', the x-axis is given time tick-marks.
+    beats : np.ndarray
+        location of beats as time values
+    beat_labs : list
+        labels at the beats (e.g. 1.1, 1.2, etc)
+    onsets : np.ndarray
+        location of onsets as time values
     ax : matplotlib.axes.Axes or None
         Axes to plot on instead of the default `plt.gca()`.
     kwargs
@@ -286,7 +298,7 @@ def __plot_beats(beats, max_time, ax, beat_labs=None, **kwargs):
 
 
 def __plot_onsets(onsets, max_time, ax, **kwargs):
-    '''Plot beat labels.
+    '''Plot onsets locations.
 
     Parameters
     ----------
@@ -316,7 +328,7 @@ def __plot_onsets(onsets, max_time, ax, **kwargs):
     ind_ons = util.find_nearest(onsets, max_time)
     new_ons = onsets[:ind_ons]
 
-    # plot beat annotations
+    # plot onsets annotations
     for onset in new_ons:
         ax.axvline(x=onset, **kwargs)
 
