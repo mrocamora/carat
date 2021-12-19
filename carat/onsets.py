@@ -24,7 +24,7 @@ from . import features
 __all__ = ['detection']
 
 def detection(signal, fs=22050, **kwargs):
-    """Onset detection from audio file. 
+    """Onset detection from audio signal. 
 
     Parameters
     ----------
