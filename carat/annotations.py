@@ -342,18 +342,10 @@ def save_onsets(onsets_file, onset_times, onset_labels=None, delimiter=","):
         label for each onset
 
     """
-    
-    # save onsets to file
-    with open(onsets_file, 'wb') as csvfile:
-        # csv writer
-        writer = csv.writer(csvfile, delimiter=delimiter, quotechar='"', quoting=csv.QUOTE_NONE)
-        # convert time values to string
-        str_time = ["{:2.3f}".format(num) for num in onset_times]
 
-        # write onsets as rows (with or without labels)
-        if onset_labels:
-            for ind, time in enumerate(str_time):
-                writer.writerow(time, onset_labels[ind])
-        else: 
-            for time in str_time:
-                writer.writerow([time])
+    # write onsets as rows
+    if onset_labels:
+        # TODO
+        print("writing onset labels not implemented yet")
+    
+    np.savetxt(onsets_file, onset_times, delimiter=delimiter)
