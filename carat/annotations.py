@@ -325,3 +325,35 @@ def trim_downbeats(downbeat_times, downbeat_labels, ini_bar, num_bars):
     downbeat_labels_trimmed = downbeat_labels[ini_bar-1:ini_bar-1+num_bars]
 
     return downbeat_times_trimmed, downbeat_labels_trimmed
+
+
+def save_onsets(onsets_file, onset_times, onset_labels=None, delimiter=","):
+    """ Save onsets to a file.
+    
+    Parameters
+    ----------
+    onsets_file : str
+        name (including path) of the output file
+    delimiter : str
+        string used as delimiter in the output file
+    onset_times : np.ndarray
+        index of the time data
+    onset_labels : list
+        column index of the label data
+
+    Returns
+    -------
+    onset_times : np.ndarray
+        time instants of the onsets
+    onset_labels : list
+        labels at the onsets (e.g. '2', '2', '1', etc)
+
+    """
+    
+    # save onsets to file
+    with open(unicode(onsets_file, "UTF-8") + '_onsets_ra.csv', 'wb') as csvfile:
+        # csv writer
+        writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONE)
+        srt_time = ["{:2.3f}".format(num) for num in superflux.time_index[peak_indxs]]
+        for ind in xrange(len(superflux.time_index[peak_indxs])):
+            writer.writerow([srt_time[ind]])

@@ -489,19 +489,21 @@ def deltas(x, w=3):
 
 
 def getValidKeywords(kw, func):
-    """ returns a dictionary containing the keywords arguments (in a list?) valid for a function.
+    """ returns a dictionary containing the keywords arguments valid/invalid for a given function.
 
     Parameters
     ----------
-    kw : (check) 
-    	(check)
-    func : (check)
-    	(check)
+    kw : dictionary
+    	dictionary of input keywords
+    func : object
+    	function
     
     Returns
     -------
-    filename : str
-        Path to the audio example file included with `carat`.
+    valid_kw : dictionary
+        dictionary of valid keywords
+    invalid_kw : dictionary
+        dictionary of invalid keywords
     """
     import inspect
     valid_kw = {}
