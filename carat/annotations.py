@@ -325,3 +325,27 @@ def trim_downbeats(downbeat_times, downbeat_labels, ini_bar, num_bars):
     downbeat_labels_trimmed = downbeat_labels[ini_bar-1:ini_bar-1+num_bars]
 
     return downbeat_times_trimmed, downbeat_labels_trimmed
+
+
+def save_onsets(onsets_file, onset_times, onset_labels=None, delimiter=","):
+    """ Save onsets to a file.
+    
+    Parameters
+    ----------
+    onsets_file : str
+        name (including path) of the output file
+    delimiter : str
+        string used as delimiter in the output file
+    onset_times : np.ndarray
+        time instant of each onset
+    onset_labels : list
+        label for each onset
+
+    """
+
+    # write onsets as rows
+    if onset_labels:
+        # TODO
+        print("writing onset labels not implemented yet")
+    
+    np.savetxt(onsets_file, onset_times, delimiter=delimiter)

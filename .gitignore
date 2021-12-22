@@ -44,6 +44,7 @@ Thumbs.db
 docs/generated/
 docs/_build/
 docs/auto_examples/
+docs/source/auto_examples/
 
 # Vim
 *.swp
