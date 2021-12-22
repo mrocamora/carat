@@ -337,23 +337,23 @@ def save_onsets(onsets_file, onset_times, onset_labels=None, delimiter=","):
     delimiter : str
         string used as delimiter in the output file
     onset_times : np.ndarray
-        index of the time data
+        time instant of each onset
     onset_labels : list
-        column index of the label data
-
-    Returns
-    -------
-    onset_times : np.ndarray
-        time instants of the onsets
-    onset_labels : list
-        labels at the onsets (e.g. '2', '2', '1', etc)
+        label for each onset
 
     """
     
     # save onsets to file
-    with open(unicode(onsets_file, "UTF-8") + '_onsets_ra.csv', 'wb') as csvfile:
+    with open(onsets_file, 'wb') as csvfile:
         # csv writer
-        writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONE)
-        srt_time = ["{:2.3f}".format(num) for num in superflux.time_index[peak_indxs]]
-        for ind in xrange(len(superflux.time_index[peak_indxs])):
-            writer.writerow([srt_time[ind]])
+        writer = csv.writer(csvfile, delimiter=delimiter, quotechar='"', quoting=csv.QUOTE_NONE)
+        # convert time values to string
+        str_time = ["{:2.3f}".format(num) for num in onset_times]
+
+        # write onsets as rows (with or without labels)
+        if onset_labels:
+            for ind, time in enumerate(str_time):
+                writer.writerow(time, onset_labels[ind])
+        else: 
+            for time in str_time:
+                writer.writerow([time])
