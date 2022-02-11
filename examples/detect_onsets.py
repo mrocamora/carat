@@ -30,7 +30,7 @@ def onset_detection(input_file, output_file, threshold, freqs, log_flag):
     # 1. load the wav file
     # use an example audio file provided
     print('Loading audio file ...', input_file)
-    y, sr = audio.load(input_file, sr=None, duration=30.0)
+    y, sr = audio.load(input_file, sr=None)
 
     # 2. values for compute accentuation feature
     hop = 5e-3            # hop size
