@@ -32,7 +32,7 @@ def onset_detection(input_file, output_file, json_file, preset_name):
     # 1. load the wav file
     # use an example audio file provided
     print('Loading audio file ...', input_file)
-    y, sr = audio.load(input_file, sr=None, duration=30.0)
+    y, sr = audio.load(input_file, sr=None)
 
     # 2. load preset values
     print('Loading preset parameter values ...', input_file)
