@@ -28,7 +28,10 @@ def onset_detection(input_file, output_file, preset_name,
       - preset_name : str
             name of the preset to load (e.g. "chico")
       - json_file : str
-           path to the json file of presets
+           path to the json file of presets. Default: carat/presets/onsets.json
+      - verbose : bool
+           if True print values of parameters in chosen preset. Default: True
+
     '''
 
     # 1. load the wav file
@@ -40,7 +43,7 @@ def onset_detection(input_file, output_file, preset_name,
     print('Loading preset parameter values ...', json_file)
     preset = util.load_preset(json_file, preset_name)
     if verbose:
-        print('Values are:', preset)
+        print('Values in', preset_name, 'preset are:', preset)
 
     # 3. onsets detection
     print('Detecting onsets')
