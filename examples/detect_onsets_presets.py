@@ -78,7 +78,7 @@ def process_arguments(args, dirname):
     parser.add_argument('--json_file',
                         action='store',
                         help='path to the json file of presets',
-                        default=os.path.join(dirname,'../carat/presets/onsets.json'),
+                        default=os.path.join(dirname, os.pardir, 'carat', 'presets', 'onsets.json'),
                         required=False)
     parser.add_argument('--verbose',
                         action='store',
