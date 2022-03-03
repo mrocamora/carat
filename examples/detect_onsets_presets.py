@@ -40,8 +40,8 @@ def onset_detection(input_file, output_file, preset_name,
     y, sr = audio.load(input_file, sr=None)
 
     # 2. load preset values
-    print('Loading preset parameter values ...', json_file)
-    preset = util.load_preset(json_file, preset_name)
+    print('Loading preset parameter values from', json_file, 'json file...')
+    preset = util.load_preset(preset_name, json_file)
     if verbose:
         print('Values in', preset_name, 'preset are:', preset)
 
@@ -60,7 +60,7 @@ def onset_detection(input_file, output_file, preset_name,
     annotations.save_onsets(output_file, onset_times)
 
 
-def process_arguments(args, dirname):
+def process_arguments(args):
     '''Argparse function to get the program parameters'''
 
     parser = argparse.ArgumentParser(
@@ -78,7 +78,7 @@ def process_arguments(args, dirname):
     parser.add_argument('--json_file',
                         action='store',
                         help='path to the json file of presets',
-                        default=os.path.join(dirname, os.pardir, 'carat', 'presets', 'onsets.json'),
+                        default='default',
                         required=False)
     parser.add_argument('--verbose',
                         action='store',
@@ -90,11 +90,8 @@ def process_arguments(args, dirname):
 
 
 if __name__ == '__main__':
-    # get path relative to script (and not execution)
-    dirname = os.path.dirname(__file__)
-
     # get the parameters
-    parameters = process_arguments(sys.argv[1:], dirname)
+    parameters = process_arguments(sys.argv[1:])
 
     # run the detection of onsets
     onset_detection(parameters['input_file'], parameters['output_file'],
