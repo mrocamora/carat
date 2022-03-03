@@ -117,7 +117,7 @@ def accentuation_feature(signal, fs, sum_flag=True, log_flag=False, mel_flag=Tru
     # maximum filter (and difference)
     if maxfilt_flag:
         # maximum filter
-        max_spec = sp.ndimage.filters.maximum_filter(feature, size=(maxbins, 1))
+        max_spec = sp.ndimage.maximum_filter(feature, size=(maxbins, 1))
         # init the diff array
         diff = np.zeros(feature.shape)
         # calculate difference between log spec and max filtered version
@@ -602,7 +602,7 @@ def peak_detection(feature, threshold=0.05, pre_avg=0, pos_avg=0, pre_max=1, pos
         # origin controls the placement of the filter
         avg_origin = int(np.floor((pre_avg - pos_avg) / 2))
         # moving average
-        mov_avg = sp.ndimage.filters.uniform_filter(data, avg_length,
+        mov_avg = sp.ndimage.uniform_filter(data, avg_length,
                                                     mode='constant',
                                                     origin=avg_origin)
     else:
@@ -617,7 +617,7 @@ def peak_detection(feature, threshold=0.05, pre_avg=0, pos_avg=0, pre_max=1, pos
         # origin controls the placement of the filter
         max_origin = int(np.floor((pre_max - pos_max) / 2))
         # moving maximum
-        mov_max = sp.ndimage.filters.maximum_filter(candidates, max_length,
+        mov_max = sp.ndimage.maximum_filter(candidates, max_length,
                                                     mode='constant',
                                                     origin=max_origin)
         # candidates are peak positions
