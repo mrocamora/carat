@@ -655,3 +655,16 @@ def load_preset(json_file, preset_name):
         preset = presets[preset_name]
 
     return preset
+
+
+def list_presets():
+    """List the available presets and print out their parameters.
+    """
+    with open(
+    resource_filename(__name__, str(Path("presets") / "onsets.json")), "r"
+    ) as fi:
+        presets = json.load(fi)
+    print("AVAILABLE PRESETS")
+    print("-" * 68)
+    for key in sorted(presets.keys()):
+        print("{:10}\t{}".format(key, presets[key]))
