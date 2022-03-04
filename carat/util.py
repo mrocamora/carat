@@ -634,7 +634,7 @@ def compute_correlation_matrix(data1, data2, n=4):
 
     return CM
 
-def load_preset(json_file, preset_name):
+def load_preset(preset_name, json_file = 'default'):
     """Loads a set of parameters, i.e. a preset, from json file.
 
     Parameters
@@ -649,9 +649,25 @@ def load_preset(json_file, preset_name):
     preset : dict
         dictionary of key value pairs of parameters
     """
+    if json_file == 'default':
+        json_file = resource_filename(__name__, str(Path("presets") / "onsets.json"))
+    # else it should be the json file path
 
     with open(json_file, 'r') as fi:
         presets = json.load(fi)
         preset = presets[preset_name]
 
     return preset
+
+
+def list_presets():
+    """List the available presets and print out their parameters.
+    """
+    with open(
+    resource_filename(__name__, str(Path("presets") / "onsets.json")), "r"
+    ) as fi:
+        presets = json.load(fi)
+    print("AVAILABLE PRESETS")
+    print("-" * 68)
+    for key in sorted(presets.keys()):
+        print("{:10}\t{}".format(key, presets[key]))

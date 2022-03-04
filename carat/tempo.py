@@ -22,26 +22,29 @@ from scipy.signal import savgol_filter
 __all__ = ['compute_tempo_values']
 
 
-def compute_tempo_values(beat_times):
-    """ Compute tempo values from beat time instants.
-
+def compute_tempo_values(times, n_beats=1):
+    """ Compute tempo values from time instants.
+    By default, times are of consecutive beats (`n_beats=1`)
+    but can be of cycles of `n_beats`
+    
     Parameters
     ----------
     beat_times : np.ndarray
-        time instants of the beats
-
+        time instants
+    n_beats : int
+        number of beats between time instants (default = 1)
+    
     Returns
     -------
     bpms : np.ndarray
         tempo values as beats per minute (bpm)
-
+    
     Examples
     --------
-
     """
 
     durs = beat_times[1:] - beat_times[:-1]
-    bpms = np.round(60 / durs)
+    bpms = np.round(60*n_beats/durs)
 
     return bpms
 
