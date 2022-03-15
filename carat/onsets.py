@@ -14,14 +14,11 @@ Onsets detection
 
 """
 
-import csv
-from os import wait
-import numpy as np
-
 from . import util
 from . import features
 
 __all__ = ['detection']
+
 
 def detection(signal, fs=22050, **kwargs):
     """Onset detection from audio signal. 
