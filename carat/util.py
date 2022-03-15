@@ -29,8 +29,8 @@ Miscellaneous
 .. autosummary::
     :toctree: generated/
 
-    example_audio_file
-    example_beats_file
+    example
+    list_examples
     find_nearest
     deltas
 """
@@ -489,19 +489,21 @@ def deltas(x, w=3):
 
 
 def getValidKeywords(kw, func):
-    """ returns a dictionary containing the keywords arguments (in a list?) valid for a function.
+    """ returns a dictionary containing the keywords arguments valid/invalid for a given function.
 
     Parameters
     ----------
-    kw : (check) 
-    	(check)
-    func : (check)
-    	(check)
+    kw : dictionary
+    	dictionary of input keywords
+    func : object
+    	function
     
     Returns
     -------
-    filename : str
-        Path to the audio example file included with `carat`.
+    valid_kw : dictionary
+        dictionary of valid keywords
+    invalid_kw : dictionary
+        dictionary of invalid keywords
     """
     import inspect
     valid_kw = {}
@@ -631,3 +633,41 @@ def compute_correlation_matrix(data1, data2, n=4):
             CM[k, s] = corr
 
     return CM
+
+def load_preset(preset_name, json_file = 'default'):
+    """Loads a set of parameters, i.e. a preset, from json file.
+
+    Parameters
+    ----------
+    json_file : str
+        name (including path) of the json file
+    preset_name : str
+        name of the preset to load (e.g. "chico")
+
+    Returns
+    -------
+    preset : dict
+        dictionary of key value pairs of parameters
+    """
+    if json_file == 'default':
+        json_file = resource_filename(__name__, str(Path("presets") / "onsets.json"))
+    # else it should be the json file path
+
+    with open(json_file, 'r') as fi:
+        presets = json.load(fi)
+        preset = presets[preset_name]
+
+    return preset
+
+
+def list_presets():
+    """List the available presets and print out their parameters.
+    """
+    with open(
+    resource_filename(__name__, str(Path("presets") / "onsets.json")), "r"
+    ) as fi:
+        presets = json.load(fi)
+    print("AVAILABLE PRESETS")
+    print("-" * 68)
+    for key in sorted(presets.keys()):
+        print("{:10}\t{}".format(key, presets[key]))

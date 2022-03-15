@@ -22,13 +22,13 @@ from carat import audio, util, annotations, features, clustering, display
 # We group rhythmic patterns into clusters and plot their centroids.
 #
 # First, we'll load one of the audio files included in `carat`.
-audio_path = util.example_audio_file(num_file=1)
+audio_path = util.example("ansina_audio")
 
 y, sr = audio.load(audio_path)
 
 ##############################################
 # Next, we'll load the annotations provided for the example audio file.
-annotations_path = util.example_beats_file(num_file=1)
+annotations_path = util.example("ansina_beats")
 
 beats, beat_labs = annotations.load_beats(annotations_path)
 downbeats, downbeat_labs = annotations.load_downbeats(annotations_path)

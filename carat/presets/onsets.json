@@ -1,0 +1,62 @@
+{
+	"chico": 
+	{
+		"window_length": 20e-3,
+		"hop": 5e-3,
+		"nfilts": 80,
+		"log_flag": true,
+		"alpha": 10e4,
+		"minfreq": 500,
+		"maxfreq": 3000,
+		"threshold": 0.180,
+		"pre_avg": 14,
+		"pos_avg": 10,
+		"pre_max": 14,
+		"pos_max": 10
+	},
+	"chico2": 
+	{
+		"window_length": 20e-3,
+		"hop": 5e-3,
+		"nfilts": 80,
+		"log_flag": true,
+		"alpha": 10e4,
+		"minfreq": 500,
+		"maxfreq": 3000,
+		"threshold": 0.160,
+		"pre_avg": 14,
+		"pos_avg": 10,
+		"pre_max": 16,
+		"pos_max": 16
+	},
+	"repique": 
+	{
+		"window_length": 20e-3,
+		"hop": 5e-3,
+		"nfilts": 80,
+		"log_flag": true,
+		"alpha": 10e4,
+		"minfreq": 300,
+		"maxfreq": 5000,
+		"threshold": 0.200,
+		"pre_avg": 14,
+		"pos_avg": 10,
+		"pre_max": 14,
+		"pos_max": 10
+	},
+	"piano": 
+	{
+		"window_length": 20e-3,
+		"hop": 5e-3,
+		"nfilts": 80,
+		"log_flag": false,
+		"alpha": 10e4,
+		"minfreq": 0,
+		"maxfreq": 500,
+		"threshold": 0.080,
+		"pre_avg": 14,
+		"pos_avg": 10,
+		"pre_max": 14,
+		"pos_max": 10
+	}
+}

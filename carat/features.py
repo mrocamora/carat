@@ -78,6 +78,8 @@ def accentuation_feature(signal, fs, sum_flag=True, log_flag=False, mel_flag=Tru
         feature values
     time : np.array
         time values
+    frequency : np.array
+        frequency values
 
     Notes
     -----
@@ -115,7 +117,7 @@ def accentuation_feature(signal, fs, sum_flag=True, log_flag=False, mel_flag=Tru
     # maximum filter (and difference)
     if maxfilt_flag:
         # maximum filter
-        max_spec = sp.ndimage.filters.maximum_filter(feature, size=(maxbins, 1))
+        max_spec = sp.ndimage.maximum_filter(feature, size=(maxbins, 1))
         # init the diff array
         diff = np.zeros(feature.shape)
         # calculate difference between log spec and max filtered version
@@ -600,29 +602,30 @@ def peak_detection(feature, threshold=0.05, pre_avg=0, pos_avg=0, pre_max=1, pos
         # origin controls the placement of the filter
         avg_origin = int(np.floor((pre_avg - pos_avg) / 2))
         # moving average
-        mov_avg = sp.ndimage.filters.uniform_filter(data, avg_length,
+        mov_avg = sp.ndimage.uniform_filter(data, avg_length,
                                                     mode='constant',
                                                     origin=avg_origin)
     else:
         # do not use a moving average
         mov_avg = 0
-        # candidates above the moving average + the threshold
-        candidates = data * (data >= mov_avg + threshold)
-        # length of moving maximum filter
-        max_length = pre_max + pos_max + 1
-        # compute the moving maximum
-        if max_length > 1:
-            # origin controls the placement of the filter
-            max_origin = int(np.floor((pre_max - pos_max) / 2))
-            # moving maximum
-            mov_max = sp.ndimage.filters.maximum_filter(candidates, max_length,
-                                                        mode='constant',
-                                                        origin=max_origin)
-            # candidates are peak positions
-            candidates *= (candidates == mov_max)
-        # return indices
-        candidates_0 = np.nonzero(candidates)[0]
-        return candidates_0, mov_avg, mov_max
+    # candidates above the moving average + the threshold
+    candidates = data * (data >= mov_avg + threshold)
+    # length of moving maximum filter
+    max_length = pre_max + pos_max + 1
+    # compute the moving maximum
+    if max_length > 1:
+        # origin controls the placement of the filter
+        max_origin = int(np.floor((pre_max - pos_max) / 2))
+        # moving maximum
+        mov_max = sp.ndimage.maximum_filter(candidates, max_length,
+                                                    mode='constant',
+                                                    origin=max_origin)
+        # candidates are peak positions
+        candidates *= (candidates == mov_max)
+    # return indices
+    candidates_0 = np.nonzero(candidates)[0]
+        
+    return candidates_0, mov_avg, mov_max
 
 
 #def accentuation_feature(y, sr=22050, hop_length=512, n_fft=2048,
