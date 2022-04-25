@@ -2,3 +2,4 @@ include AUTHORS.md
 include LICENSE.md
 include README.md
 include carat/example_data/*
+include carat/presets/*
