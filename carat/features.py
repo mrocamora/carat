@@ -600,7 +600,7 @@ def peak_detection(feature, threshold=0.05, pre_avg=0, pos_avg=0, pre_max=1, pos
     # compute the moving average
     if avg_length > 1:
         # origin controls the placement of the filter
-        avg_origin = int(np.floor((pre_avg - pos_avg) / 2))
+        avg_origin = int(np.floor((pos_avg - pre_avg) / 2))
         # moving average
         mov_avg = sp.ndimage.uniform_filter(data, avg_length,
                                                     mode='constant',
@@ -615,7 +615,7 @@ def peak_detection(feature, threshold=0.05, pre_avg=0, pos_avg=0, pre_max=1, pos
     # compute the moving maximum
     if max_length > 1:
         # origin controls the placement of the filter
-        max_origin = int(np.floor((pre_max - pos_max) / 2))
+        max_origin = int(np.floor((pos_max - pre_max) / 2))
         # moving maximum
         mov_max = sp.ndimage.maximum_filter(candidates, max_length,
                                                     mode='constant',
